@@ -9,7 +9,7 @@ import time
 # Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
-    page_icon="🌍",
+    page_icon="dataonmap.jpg",
     layout="wide",
     initial_sidebar_state="auto"
 )
