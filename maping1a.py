@@ -14,23 +14,31 @@ st.set_page_config(
 )
 
 # Estilo para largura da página e mapa
+# Estilo para largura da página e mapa
 st.markdown("""
     <style>
         .reportview-container .main .block-container {
             max-width: 1200px;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
         }
         .folium-map {
             width: 100% !important;
             height: 600px !important;
             min-height: 600px !important;
         }
+        h1, h4 {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
     </style>
 """, unsafe_allow_html=True)
 
+# Título estilizado
 st.markdown("""
-<h1 style='text-align: center; color: #2C3E50;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
+<h1 style='text-align: center; color: #2C3E50; font-weight: bold;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
 <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
+
 
 
 # Mapeamento de cores em português para valores em inglês
