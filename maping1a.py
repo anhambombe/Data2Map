@@ -14,10 +14,10 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# Estilo para largura da página e mapa
+import streamlit as st
 import base64
 
-# Codifica a imagem em base64
+# Função para converter a imagem em base64
 def get_image_base64(path):
     with open(path, "rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
@@ -25,7 +25,7 @@ def get_image_base64(path):
 
 image_base64 = get_image_base64("dataonmap.jpg")
 
-# Estilo e título com imagem à direita
+# HTML e CSS com imagem redonda e borda brilhante
 st.markdown(f"""
     <style>
         .reportview-container .main .block-container {{
@@ -45,20 +45,24 @@ st.markdown(f"""
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }}
         .header-container img {{
-            width: 40px;
-            height: auto;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #1ABC9C;
+            box-shadow: 0 0 8px #1ABC9C;
         }}
     </style>
 
     <div class='header-container'>
         <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-        <img src="{image_base64}" alt="Logo pequena">
+        <img src="{image_base64}" alt="Logo redonda">
     </div>
     <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
+
 
 
 
