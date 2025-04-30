@@ -31,17 +31,31 @@ st.markdown("""
         h1, h4 {
             font-family: 'Segoe UI', 'Roboto', sans-serif;
         }
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-container img {
+            width: 40px;
+            height: auto;
+        }
     </style>
 """, unsafe_allow_html=True)
 
-# Título estilizado
+# Título estilizado com imagem ao lado
 st.markdown("""
-<h1 style='text-align: center; color: #2C3E50; font-weight: bold;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
+<div class='header-container'>
+    <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
+    <img src='dataonmap.jpg' alt='Logo pequena'>
+</div>
 <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
 
 
-st.image("dataonmap.jpg")
+
+
 # Mapeamento de cores em português para valores em inglês
 color_mapping_internal = {
     "Vermelho 1": "red",
