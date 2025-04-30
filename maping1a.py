@@ -4,6 +4,7 @@ from streamlit_folium import st_folium
 from utils1a import load_shapefile, load_data_file, create_choropleth_map, add_legend
 import io
 import pandas as pd
+import time
 
 # Configuração da página
 st.set_page_config(
@@ -246,17 +247,20 @@ def choropleth_tab():
             message_placeholder.empty()
 
             if m:
-                message_placeholder.success("Mapa gerado com sucesso!")
+                #message_placeholder.success("Mapa gerado com sucesso!")
                 add_legend(m, color_mapping, "Categorias")
                 # Gerar o buffer para download
                 map_buffer = io.BytesIO()
                 m.save(map_buffer, close_file=False)
                 map_buffer = map_buffer.getvalue()
+                message_placeholder.success("Mapa gerado com sucesso!")
                 # Renderizar o mapa
                 message_placeholder.info("Renderizando mapa...")
                 try:
                     st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                     message_placeholder.success("Mapa renderizado com sucesso!")
+                    time.sleep(5)
+                    message_placeholder.empty()
                 except Exception as e:
                     message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
                     return
