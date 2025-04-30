@@ -15,43 +15,51 @@ st.set_page_config(
 )
 
 # Estilo para largura da página e mapa
-# Estilo para largura da página e mapa
-st.markdown("""
+import base64
+
+# Codifica a imagem em base64
+def get_image_base64(path):
+    with open(path, "rb") as image_file:
+        encoded = base64.b64encode(image_file.read()).decode()
+    return f"data:image/jpg;base64,{encoded}"
+
+image_base64 = get_image_base64("dataonmap.jpg")
+
+# Estilo e título com imagem à direita
+st.markdown(f"""
     <style>
-        .reportview-container .main .block-container {
+        .reportview-container .main .block-container {{
             max-width: 1200px;
             padding-top: 2rem;
             padding-bottom: 2rem;
-        }
-        .folium-map {
+        }}
+        .folium-map {{
             width: 100% !important;
             height: 600px !important;
             min-height: 600px !important;
-        }
-        h1, h4 {
+        }}
+        h1, h4 {{
             font-family: 'Segoe UI', 'Roboto', sans-serif;
-        }
-        .header-container {
+        }}
+        .header-container {{
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
-        }
-        .header-container img {
+        }}
+        .header-container img {{
             width: 40px;
             height: auto;
-        }
+        }}
     </style>
+
+    <div class='header-container'>
+        <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
+        <img src="{image_base64}" alt="Logo pequena">
+    </div>
+    <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
 
-# Título estilizado com imagem ao lado
-st.markdown("""
-<div class='header-container'>
-    <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-    <img src='dataonmap.jpg' alt='Logo pequena'>
-</div>
-<h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
-""", unsafe_allow_html=True)
 
 
 
