@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="auto"
 )
-
+#####################
 import streamlit as st
 import base64
 
@@ -25,7 +25,7 @@ def get_image_base64(path):
 
 image_base64 = get_image_base64("dataonmap.jpg")
 
-# HTML e CSS com imagem redonda e borda brilhante
+# HTML e CSS com animação pulsante
 st.markdown(f"""
     <style>
         .reportview-container .main .block-container {{
@@ -53,17 +53,30 @@ st.markdown(f"""
             border-radius: 50%;
             border: 2px solid #1ABC9C;
             box-shadow: 0 0 8px #1ABC9C;
+            animation: pulse 2s infinite;
+        }}
+        @keyframes pulse {{
+            0% {{
+                box-shadow: 0 0 8px #1ABC9C;
+            }}
+            50% {{
+                box-shadow: 0 0 20px #1ABC9C;
+            }}
+            100% {{
+                box-shadow: 0 0 8px #1ABC9C;
+            }}
         }}
     </style>
 
     <div class='header-container'>
         <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-        <img src="{image_base64}" alt="Logo redonda">
+        <img src="{image_base64}" alt="Logo redonda brilhante">
     </div>
     <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
 
 
+#####################################################
 
 
 
