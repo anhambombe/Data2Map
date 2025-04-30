@@ -14,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 #####################
-import streamlit as st
+#import streamlit as st
 import base64
 
 # Função para converter a imagem em base64
@@ -25,7 +25,7 @@ def get_image_base64(path):
 
 image_base64 = get_image_base64("dataonmap.jpg")
 
-# HTML e CSS com animação pulsante
+# HTML + CSS com posicionamento acima da letra "p"
 st.markdown(f"""
     <style>
         .reportview-container .main .block-container {{
@@ -42,14 +42,15 @@ st.markdown(f"""
             font-family: 'Segoe UI', 'Roboto', sans-serif;
         }}
         .header-container {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
+            position: relative;
+            text-align: center;
         }}
-        .header-container img {{
-            width: 70px;
-            height: 70px;
+        .logo-image {{
+            position: absolute;
+            top: -10px;     /* Eleva a imagem */
+            left: 63%;      /* Ajuste horizontal até ficar sobre o "p" */
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: 2px solid #1ABC9C;
             box-shadow: 0 0 8px #1ABC9C;
@@ -70,10 +71,11 @@ st.markdown(f"""
 
     <div class='header-container'>
         <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-        <img src="{image_base64}" alt="Logo redonda brilhante">
+        <img class="logo-image" src="{image_base64}" alt="Logo redonda brilhante">
     </div>
     <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
+
 
 
 #####################################################
