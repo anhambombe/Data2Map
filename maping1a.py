@@ -48,7 +48,7 @@ st.markdown(f"""
         .logo-image {{
             position: absolute;
             top: -10px;     /* Eleva a imagem */
-            left: 63%;      /* Ajuste horizontal até ficar sobre o "p" */
+            left: 60%;      /* Ajuste horizontal até ficar sobre o "p" */
             width: 50px;
             height: 50px;
             border-radius: 50%;
