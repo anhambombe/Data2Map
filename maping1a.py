@@ -23,7 +23,7 @@ def get_image_base64(path):
         encoded = base64.b64encode(image_file.read()).decode()
     return f"data:image/jpg;base64,{encoded}"
 
-image_base64 = get_image_base64("dataonmap.jpg")
+image_base64 = get_image_base64("dataonmapicon.png")
 
 # HTML + CSS com posicionamento acima da letra "p"
 st.markdown(f"""
