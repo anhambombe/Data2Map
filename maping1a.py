@@ -7,7 +7,7 @@ import pandas as pd
 
 # Configuração da página
 st.set_page_config(
-    page_title="EasyMap",
+    page_title="DataOnMap",
     page_icon="🌍",
     layout="wide",
     initial_sidebar_state="auto"
@@ -27,8 +27,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Título do aplicativo
-st.markdown("**EasyMap:** Simplificando a elaboração de mapas coropléticos")
+st.markdown("""
+<h1 style='text-align: center; color: #2C3E50;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
+<h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
+""", unsafe_allow_html=True)
+
 
 # Mapeamento de cores em português para valores em inglês
 color_mapping_internal = {
