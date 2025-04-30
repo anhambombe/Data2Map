@@ -56,7 +56,7 @@ color_mapping_internal = {
 
 # Função para a aba Map
 def choropleth_tab():
-    st.subheader("rainbow[Mapa Coroplético]")
+    st.subheader(":rainbow[Mapa Coroplético]")
     message_placeholder = st.empty()
 
     # Carregamento de arquivos na barra lateral
