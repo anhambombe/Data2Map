@@ -41,7 +41,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-
+st.image("dataonmap.jpg")
 # Mapeamento de cores em português para valores em inglês
 color_mapping_internal = {
     "Vermelho 1": "red",
