@@ -7,6 +7,7 @@ import tempfile
 import zipfile
 import os
 from branca.element import Template, MacroElement
+import branca
 
 @st.cache_resource
 def load_shapefile(zip_file):
