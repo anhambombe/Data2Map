@@ -230,18 +230,12 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                     ).add_to(label_group_mun)
 
         # Adicionar camadas de fundo
-        folium.TileLayer(
-            tiles="openstreetmap",
-            name="OpenStreetMap",
-            attr="Map data © OpenStreetMap contributors",
-            show=True
-        ).add_to(m)
-        folium.TileLayer(
-            tiles="cartodb positron",
-            name="CartoDB Positron",
-            attr="Tiles © CartoDB",
-            show=False
-        ).add_to(m)
+        # Adicionar camadas de fundo
+        folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
+        folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
+        white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
+        folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
+        folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
 
         # Adicionar controles
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
