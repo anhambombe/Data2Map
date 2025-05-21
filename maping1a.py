@@ -1,4 +1,4 @@
-
+```python
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
@@ -94,19 +94,17 @@ def choropleth_tab():
         st.session_state.data = None
     if 'map_buffer' not in st.session_state:
         st.session_state.map_buffer = None
+    if 'categorical_column' not in st.session_state:
+        st.session_state.categorical_column = None
 
-    # Carregar arquivos antes do formulário
-    shapefile_zip2 = None
-    shapefile_zip = None
-    excel_file = None
-    sheet_name = None
-
+    # Carregar arquivos
     with st.sidebar:
         with st.expander("Leitura de dados"):
             shapefile_zip2 = st.file_uploader("Shapefile das Províncias (.zip)", type=["zip"], key="shapefile_zip2")
             shapefile_zip = st.file_uploader("Shapefile dos Municípios (.zip)", type=["zip"], key="shapefile_zip")
             excel_file = st.file_uploader("Tabela de Dados", type=["xlsx", "xls", "txt", "csv"], key="excel_file")
 
+            sheet_name = None
             if excel_file and excel_file.type in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
                 try:
                     xl = pd.ExcelFile(excel_file)
@@ -129,15 +127,19 @@ def choropleth_tab():
         if st.session_state.gdf is None or st.session_state.gdf2 is None or st.session_state.data is None:
             message_placeholder.error("Erro ao carregar os arquivos. Verifique os shapefiles e a tabela de dados.")
             return
+        else:
+            message_placeholder.success("Arquivos carregados com sucesso!")
 
     # Formulário para configurações
     with st.sidebar.form(key="map_form"):
-        with st.expander("Selecione as colunas"):
-            gdf_columns = list(st.session_state.gdf.columns) if st.session_state.gdf is not None else []
-            data_columns = list(st.session_state.data.columns) if st.session_state.data is not None else []
-            join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile")
-            join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data")
-            categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column")
+        files_loaded = st.session_state.gdf is not None and st.session_state.gdf2 is not None and st.session_state.data is not None
+
+        with st.expander("Selecione as colunas", expanded=files_loaded):
+            gdf_columns = list(st.session_state.gdf.columns) if files_loaded else []
+            data_columns = list(st.session_state.data.columns) if files_loaded else []
+            join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile", disabled=not files_loaded)
+            join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data", disabled=not files_loaded)
+            st.session_state.categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column", disabled=not files_loaded)
 
         with st.expander("Configurar limites"):
             col1, col2 = st.columns([0.5, 0.5])
@@ -157,9 +159,9 @@ def choropleth_tab():
 
             prov_label_config = {}
             if exibir_labels_prov:
-                gdf2_columns = list(st.session_state.gdf2.columns) if st.session_state.gdf2 is not None else []
+                gdf2_columns = list(st.session_state.gdf2.columns) if files_loaded else []
                 prov_label_config["column"] = st.selectbox(
-                    "Coluna para rótulos (Províncias):", [None] + gdf2_columns, key="prov_label_column")
+                    "Coluna para rótulos (Províncias):", [None] + gdf2_columns, key="prov_label_column", disabled=not files_loaded)
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
                     prov_label_config["font_size"] = st.slider(
@@ -179,7 +181,7 @@ def choropleth_tab():
             mun_label_config = {}
             if exibir_labels_distr:
                 mun_label_config["column"] = st.selectbox(
-                    "Coluna para rótulos (Municípios):", [None] + gdf_columns, key="mun_label_column")
+                    "Coluna para rótulos (Municípios):", [None] + gdf_columns, key="mun_label_column", disabled=not files_loaded)
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
                     mun_label_config["font_size"] = st.slider(
@@ -195,10 +197,10 @@ def choropleth_tab():
                     mun_label_config["font_name"] = st.radio(
                         "Selecione o nome da fonte (Municípios):", options=font_options, key="mun_fontname")
 
-        with st.expander("Selecione as cores"):
+        with st.expander("Selecione as cores", expanded=st.session_state.categorical_column is not None):
             color_mapping = {}
-            if categorical_column and categorical_column in st.session_state.get('data', pd.DataFrame()).columns:
-                unique_categories = st.session_state.data[categorical_column].dropna().unique()
+            if files_loaded and st.session_state.categorical_column and st.session_state.categorical_column in st.session_state.data.columns:
+                unique_categories = st.session_state.data[st.session_state.categorical_column].dropna().unique()
                 if len(unique_categories) > 0:
                     cols = st.columns(min(len(unique_categories), 3))
                     for i, category in enumerate(unique_categories):
@@ -209,7 +211,14 @@ def choropleth_tab():
             else:
                 message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
 
-        submit_button = st.form_submit_button("Gerar Mapa", disabled=not (shapefile_zip2 and shapefile_zip and excel_file and join_column_shapefile and join_column_data and categorical_column))
+        # Debug: Mostrar estado dos inputs
+        st.write(f"Arquivos carregados: {files_loaded}")
+        st.write(f"Coluna categórica: {st.session_state.categorical_column}")
+
+        submit_button = st.form_submit_button(
+            "Gerar Mapa",
+            disabled=not (files_loaded and join_column_shapefile and join_column_data and st.session_state.categorical_column)
+        )
 
     # Gerar mapa quando o botão for clicado
     if submit_button:
@@ -224,15 +233,15 @@ def choropleth_tab():
                 message_placeholder.error(f"Erro inesperado ao unir os dados: {e}")
                 return
 
-        if categorical_column not in gdf_merged.columns:
-            message_placeholder.error(f"A coluna de categorias '{categorical_column}' não foi encontrada no shapefile após a união.")
+        if st.session_state.categorical_column not in gdf_merged.columns:
+            message_placeholder.error(f"A coluna de categorias '{st.session_state.categorical_column}' não foi encontrada no shapefile após a união.")
             return
 
         with st.spinner("Gerando mapa..."):
             m = create_choropleth_map(
                 gdf_merged,
                 st.session_state.gdf2,
-                categorical_column,
+                st.session_state.categorical_column,
                 color_mapping,
                 join_column_data,
                 prov_label_config=prov_label_config,
@@ -290,6 +299,7 @@ def choropleth_tab():
         st.session_state.gdf2 = None
         st.session_state.data = None
         st.session_state.map_buffer = None
+        st.session_state.categorical_column = None
         message_placeholder.info("Faça o upload de todos os arquivos necessários.")
 
 choropleth_tab()
@@ -300,4 +310,4 @@ st.sidebar.markdown("""
 **EasyMap** © 2024 | **Devs.com**  
 **Versão:** 1.0.0
 """)
-
+```
