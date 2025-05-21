@@ -12,7 +12,7 @@ branca
 #topopyscale
 #TopoPyScale
 topojson
-
+xlrd
 XlsxWriter
 pyproj
 shapely
