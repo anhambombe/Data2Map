@@ -116,88 +116,89 @@ def choropleth_tab():
                     message_placeholder.error(f"Erro ao ler as planilhas do arquivo Excel: {e}")
                     return
 
-        # Seleção de colunas para união e categorias
-        with st.expander("Selecione as colunas"):
-            gdf_columns = list(gdf.columns) if gdf is not None else []
-            data_columns = list(data.columns) if data is not None else []
-            join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile")
-            join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data")
-            categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column")
-
-        # Configuração dos limites
-        with st.expander("Configurar limites"):
-            col1, col2 = st.columns([0.5, 0.5])
-            with col1:
-                prov_border_width = st.slider("Largura dos limites (Províncias):", min_value=0.5, max_value=5.0, value=1.0, step=0.1, key="prov_border_width")
-                prov_border_color = st.color_picker("Cor dos limites (Províncias):", "#000000", key="prov_border_color")
-            with col2:
-                mun_border_width = st.slider("Largura dos limites (Municípios):", min_value=0.5, max_value=5.0, value=0.5, step=0.1, key="mun_border_width")
-                mun_border_color = st.color_picker("Cor dos limites (Municípios):", "#808080", key="mun_border_color")
-
-        # Configuração de rótulos
-        with st.expander("Rótulos de dados"):
-            col1, col2 = st.columns([0.5, 0.5])
-            with col1:
-                exibir_labels_prov = st.checkbox("Exibir Labels das Províncias no Mapa", key="provi_checkbox")
-            with col2:
-                exibir_labels_distr = st.checkbox("Exibir Labels dos Municípios no Mapa", key="distritos_checkbox")
-
-            prov_label_config = {}
-            if exibir_labels_prov:
-                gdf2_columns = list(st.session_state.gdf2.columns) if st.session_state.gdf2 is not None else []
-                prov_label_config["column"] = st.selectbox(
-                    "Coluna para rótulos (Províncias):", [None] + gdf2_columns, key="prov_label_column")
+            # Seleção de colunas para união e categorias
+        if shapefile_zip2 and shapefile_zip and excel_file:
+            with st.expander("Selecione as colunas"):
+                gdf_columns = list(gdf.columns) if gdf is not None else []
+                data_columns = list(data.columns) if data is not None else []
+                join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile")
+                join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data")
+                categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column")
+    
+            # Configuração dos limites
+            with st.expander("Configurar limites"):
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
-                    prov_label_config["font_size"] = st.slider(
-                        "Tamanho da fonte (Províncias):", min_value=8, max_value=30, value=12, step=1, key="prov_font_size")
+                    prov_border_width = st.slider("Largura dos limites (Províncias):", min_value=0.5, max_value=5.0, value=1.0, step=0.1, key="prov_border_width")
+                    prov_border_color = st.color_picker("Cor dos limites (Províncias):", "#000000", key="prov_border_color")
                 with col2:
-                    prov_label_config["bold"] = st.checkbox("Texto em negrito (Províncias)", key="bold_prov")
+                    mun_border_width = st.slider("Largura dos limites (Municípios):", min_value=0.5, max_value=5.0, value=0.5, step=0.1, key="mun_border_width")
+                    mun_border_color = st.color_picker("Cor dos limites (Municípios):", "#808080", key="mun_border_color")
+    
+            # Configuração de rótulos
+            with st.expander("Rótulos de dados"):
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
-                    fontcolor_pt1 = st.radio(
-                        "Selecione a cor da fonte (Províncias):", options=list(color_mapping_internal.keys()), key="prov_fontcolor_pt1")
-                    prov_label_config["font_color"] = color_mapping_internal[fontcolor_pt1]
+                    exibir_labels_prov = st.checkbox("Exibir Labels das Províncias no Mapa", key="provi_checkbox")
                 with col2:
-                    font_options = ["Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Comic Sans MS", "Tahoma", "Trebuchet MS"]
-                    prov_label_config["font_name"] = st.radio(
-                        "Selecione o nome da fonte (Províncias):", options=font_options, key="prov_fontname1")
-
-            mun_label_config = {}
-            if exibir_labels_distr:
-                mun_label_config["column"] = st.selectbox(
-                    "Coluna para rótulos (Municípios):", [None] + gdf_columns, key="mun_label_column")
-                col1, col2 = st.columns([0.5, 0.5])
-                with col1:
-                    mun_label_config["font_size"] = st.slider(
-                        "Tamanho da fonte (Municípios):", min_value=8, max_value=30, value=12, step=1, key="mun_font_size")
-                with col2:
-                    mun_label_config["bold"] = st.checkbox("Texto em negrito (Municípios)", key="bold_mun")
-                col1, col2 = st.columns([0.5, 0.5])
-                with col1:
-                    fontcolor_pt = st.radio(
-                        "Selecione a cor da fonte (Municípios):", options=list(color_mapping_internal.keys()), key="mun_fontcolor_pt")
-                    mun_label_config["font_color"] = color_mapping_internal[fontcolor_pt]
-                with col2:
-                    mun_label_config["font_name"] = st.radio(
-                        "Selecione o nome da fonte (Municípios):", options=font_options, key="mun_fontname")
-
-        # Seleção de cores para categorias
-        color_mapping = {}
-        with st.expander("Selecione as cores"):
-            if categorical_column and categorical_column in st.session_state.get('data', pd.DataFrame()).columns:
-                unique_categories = st.session_state.data[categorical_column].dropna().unique()
-                if len(unique_categories) > 0:
-                    cols = st.columns(min(len(unique_categories), 3))
-                    for i, category in enumerate(unique_categories):
-                        with cols[i % len(cols)]:
-                            color_mapping[category] = st.color_picker(f"Cor para {category}", "#FF0000", key=f"color_{category}")
+                    exibir_labels_distr = st.checkbox("Exibir Labels dos Municípios no Mapa", key="distritos_checkbox")
+    
+                prov_label_config = {}
+                if exibir_labels_prov:
+                    gdf2_columns = list(st.session_state.gdf2.columns) if st.session_state.gdf2 is not None else []
+                    prov_label_config["column"] = st.selectbox(
+                        "Coluna para rótulos (Províncias):", [None] + gdf2_columns, key="prov_label_column")
+                    col1, col2 = st.columns([0.5, 0.5])
+                    with col1:
+                        prov_label_config["font_size"] = st.slider(
+                            "Tamanho da fonte (Províncias):", min_value=8, max_value=30, value=12, step=1, key="prov_font_size")
+                    with col2:
+                        prov_label_config["bold"] = st.checkbox("Texto em negrito (Províncias)", key="bold_prov")
+                    col1, col2 = st.columns([0.5, 0.5])
+                    with col1:
+                        fontcolor_pt1 = st.radio(
+                            "Selecione a cor da fonte (Províncias):", options=list(color_mapping_internal.keys()), key="prov_fontcolor_pt1")
+                        prov_label_config["font_color"] = color_mapping_internal[fontcolor_pt1]
+                    with col2:
+                        font_options = ["Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Comic Sans MS", "Tahoma", "Trebuchet MS"]
+                        prov_label_config["font_name"] = st.radio(
+                            "Selecione o nome da fonte (Províncias):", options=font_options, key="prov_fontname1")
+    
+                mun_label_config = {}
+                if exibir_labels_distr:
+                    mun_label_config["column"] = st.selectbox(
+                        "Coluna para rótulos (Municípios):", [None] + gdf_columns, key="mun_label_column")
+                    col1, col2 = st.columns([0.5, 0.5])
+                    with col1:
+                        mun_label_config["font_size"] = st.slider(
+                            "Tamanho da fonte (Municípios):", min_value=8, max_value=30, value=12, step=1, key="mun_font_size")
+                    with col2:
+                        mun_label_config["bold"] = st.checkbox("Texto em negrito (Municípios)", key="bold_mun")
+                    col1, col2 = st.columns([0.5, 0.5])
+                    with col1:
+                        fontcolor_pt = st.radio(
+                            "Selecione a cor da fonte (Municípios):", options=list(color_mapping_internal.keys()), key="mun_fontcolor_pt")
+                        mun_label_config["font_color"] = color_mapping_internal[fontcolor_pt]
+                    with col2:
+                        mun_label_config["font_name"] = st.radio(
+                            "Selecione o nome da fonte (Municípios):", options=font_options, key="mun_fontname")
+    
+            # Seleção de cores para categorias
+            color_mapping = {}
+            with st.expander("Selecione as cores"):
+                if categorical_column and categorical_column in st.session_state.get('data', pd.DataFrame()).columns:
+                    unique_categories = st.session_state.data[categorical_column].dropna().unique()
+                    if len(unique_categories) > 0:
+                        cols = st.columns(min(len(unique_categories), 3))
+                        for i, category in enumerate(unique_categories):
+                            with cols[i % len(cols)]:
+                                color_mapping[category] = st.color_picker(f"Cor para {category}", "#FF0000", key=f"color_{category}")
+                    else:
+                        message_placeholder.warning("A coluna de categorias selecionada não contém valores válidos.")
                 else:
-                    message_placeholder.warning("A coluna de categorias selecionada não contém valores válidos.")
-            else:
-                message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
-
-        submit_button = st.form_submit_button("Gerar Mapa")
+                    message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
+    
+            submit_button = st.form_submit_button("Gerar Mapa")
 
     # Processar arquivos fora do formulário
     if shapefile_zip2 and shapefile_zip and excel_file:
