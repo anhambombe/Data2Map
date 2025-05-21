@@ -118,8 +118,8 @@ def choropleth_tab():
 
         # Seleção de colunas para união e categorias
         with st.expander("Selecione as colunas"):
-            gdf_columns = list(st.session_state.gdf.columns) if st.session_state.gdf is not None else []
-            data_columns = list(st.session_state.data.columns) if st.session_state.data is not None else []
+            gdf_columns = list(gdf.columns) if gdf is not None else []
+            data_columns = list(data.columns) if data is not None else []
             join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile")
             join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data")
             categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column")
