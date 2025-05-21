@@ -1,4 +1,4 @@
-```python
+
 import streamlit as st
 import folium
 from streamlit_folium import st_folium
@@ -300,4 +300,4 @@ st.sidebar.markdown("""
 **EasyMap** © 2024 | **Devs.com**  
 **Versão:** 1.0.0
 """)
-```
+
