@@ -139,7 +139,7 @@ def choropleth_tab():
             data_columns = list(st.session_state.data.columns) if files_loaded else []
             join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + gdf_columns, key="join_column_shapefile", disabled=not files_loaded)
             join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + data_columns, key="join_column_data", disabled=not files_loaded)
-            st.session_state.categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column", disabled=not files_loaded)
+            categorical_column = st.selectbox("Coluna de categorias:", [None] + data_columns, key="categorical_column", disabled=not files_loaded)
 
         with st.expander("Configurar limites"):
             col1, col2 = st.columns([0.5, 0.5])
@@ -197,10 +197,10 @@ def choropleth_tab():
                     mun_label_config["font_name"] = st.radio(
                         "Selecione o nome da fonte (Municípios):", options=font_options, key="mun_fontname")
 
-        with st.expander("Selecione as cores", expanded=st.session_state.categorical_column is not None):
+        with st.expander("Selecione as cores", expanded=categorical_column is not None):
             color_mapping = {}
-            if files_loaded and st.session_state.categorical_column and st.session_state.categorical_column in st.session_state.data.columns:
-                unique_categories = st.session_state.data[st.session_state.categorical_column].dropna().unique()
+            if files_loaded and categorical_column and categorical_column in st.session_state.data.columns:
+                unique_categories = st.session_state.data[categorical_column].dropna().unique()
                 if len(unique_categories) > 0:
                     cols = st.columns(min(len(unique_categories), 3))
                     for i, category in enumerate(unique_categories):
@@ -213,15 +213,18 @@ def choropleth_tab():
 
         # Debug: Mostrar estado dos inputs
         st.write(f"Arquivos carregados: {files_loaded}")
-        st.write(f"Coluna categórica: {st.session_state.categorical_column}")
+        st.write(f"Coluna de união (Shapefile): {join_column_shapefile}")
+        st.write(f"Coluna de união (Tabela): {join_column_data}")
+        st.write(f"Coluna categórica: {categorical_column}")
 
         submit_button = st.form_submit_button(
             "Gerar Mapa",
-            disabled=not (files_loaded and join_column_shapefile and join_column_data and st.session_state.categorical_column)
+            disabled=not (files_loaded and join_column_shapefile and join_column_data and categorical_column)
         )
 
-    # Gerar mapa quando o botão for clicado
+    # Atualizar session_state após submissão do formulário
     if submit_button:
+        st.session_state.categorical_column = categorical_column
         with st.spinner("Unindo dados..."):
             try:
                 gdf_merged = merge_data(st.session_state.gdf, st.session_state.data, join_column_shapefile, join_column_data)
@@ -310,4 +313,3 @@ st.sidebar.markdown("""
 **EasyMap** © 2024 | **Devs.com**  
 **Versão:** 1.0.0
 """)
-
