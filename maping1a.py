@@ -9,7 +9,7 @@ import base64
 # Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
-    page_icon="dataonmapicon.icon",
+    page_icon="dataonmapicon.ico",
     layout="wide",
     initial_sidebar_state="auto"
 )
