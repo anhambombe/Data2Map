@@ -9,18 +9,22 @@ import os
 from branca.element import Template, MacroElement
 import branca
 
-@st.cache_resource
-def load_shapefile(zip_file):
+@st.cache_resource(hash_funcs={tempfile._TemporaryFileWrapper: lambda x: x.name})
+def load_shapefile(zip_file, message_placeholder):
     """
     Carrega um shapefile a partir de um arquivo ZIP.
 
     Args:
-        zip_file: Arquivo ZIP contendo o shapefile (.shp e arquivos associados).
+        zip_file: Arquivo ZIP contendo o shapefile (.shp, .shx, .dbf).
+        message_placeholder: Objeto Streamlit para exibir mensagens de status.
 
     Returns:
-        gpd.GeoDataFrame: GeoDataFrame com os dados do shapefile, ou None em caso de erro.
+        gpd.GeoDataFrame: GeoDataFrame com os dados do shapefile, ou None se houver erro.
+
+    Raises:
+        zipfile.BadZipFile: Se o arquivo ZIP estiver corrompido.
+        fiona.errors.FionaValueError: Se o shapefile estiver incompleto.
     """
-    message_placeholder = st.empty()
     try:
         with tempfile.TemporaryDirectory() as tmpdir:
             zip_path = os.path.join(tmpdir, "shapefile.zip")
@@ -30,15 +34,20 @@ def load_shapefile(zip_file):
                 zip_ref.extractall(tmpdir)
             shapefile_path = [os.path.join(tmpdir, f) for f in os.listdir(tmpdir) if f.endswith(".shp")]
             if not shapefile_path:
-                message_placeholder.error("O arquivo ZIP não contém um shapefile (.shp). Verifique o conteúdo do arquivo.")
+                message_placeholder.error("O arquivo ZIP não contém um shapefile (.shp).")
                 return None
             message_placeholder.info("Carregando shapefile...")
             gdf = gpd.read_file(shapefile_path[0])
             gdf[gdf.columns.difference(['geometry'])] = gdf[gdf.columns.difference(['geometry'])].astype(str)
-            # Verificar e definir CRS
             if gdf.crs is None:
-                message_placeholder.warning("Shapefile sem CRS definido. Definindo como EPSG:4326...")
+                message_placeholder.warning("Shapefile sem CRS definido. Usando EPSG:4326 como padrão.")
                 gdf.set_crs(epsg=4326, inplace=True)
+            if not gdf.geometry.is_valid.all():
+                message_placeholder.warning("Geometrias inválidas detectadas. Corrigindo...")
+                gdf.geometry = gdf.geometry.make_valid()
+            if gdf.geometry.isna().any():
+                message_placeholder.error("Alguns registros no shapefile não possuem geometrias válidas.")
+                return None
             message_placeholder.empty()
             return gdf
     except zipfile.BadZipFile:
@@ -52,22 +61,27 @@ def load_shapefile(zip_file):
         return None
 
 @st.cache_resource
-def load_data_file(file, sheet_name=None):
+def load_data_file(file, sheet_name=None, message_placeholder=None):
     """
     Carrega dados de arquivos Excel, CSV ou TXT.
 
     Args:
         file: Arquivo de entrada (xlsx, xls, csv, txt).
         sheet_name: Nome da planilha a ser lida (para arquivos Excel). Se None, lê a primeira planilha.
+        message_placeholder: Objeto Streamlit para exibir mensagens de status.
 
     Returns:
         pd.DataFrame: DataFrame com os dados, ou None em caso de erro.
     """
-    message_placeholder = st.empty()
+    if message_placeholder is None:
+        message_placeholder = st.empty()
     if file.type in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
         try:
             message_placeholder.info("Carregando arquivo Excel...")
             data = pd.read_excel(file, sheet_name=sheet_name, dtype=str)
+            if data.empty:
+                message_placeholder.error("O arquivo Excel está vazio.")
+                return None
             message_placeholder.empty()
             return data
         except ValueError as e:
@@ -79,7 +93,10 @@ def load_data_file(file, sheet_name=None):
     elif file.type == "text/csv":
         try:
             message_placeholder.info("Carregando arquivo CSV...")
-            data = pd.read_csv(file, dtype=str, low_memory=False)
+            data = pd.read_csv(file, dtype=str)
+            if data.empty:
+                message_placeholder.error("O arquivo CSV está vazio.")
+                return None
             message_placeholder.empty()
             return data
         except ValueError as e:
@@ -88,7 +105,11 @@ def load_data_file(file, sheet_name=None):
     elif file.type == "text/plain":
         try:
             message_placeholder.info("Carregando arquivo TXT...")
-            data = pd.read_csv(file, sep=None, engine='python', dtype=str, low_memory=False)
+            separator = st.session_state.get("txt_separator", ",")
+            data = pd.read_csv(file, sep=separator, engine='python', dtype=str)
+            if data.empty:
+                message_placeholder.error("O arquivo TXT está vazio.")
+                return None
             message_placeholder.empty()
             return data
         except ValueError as e:
@@ -98,83 +119,64 @@ def load_data_file(file, sheet_name=None):
         message_placeholder.error("Formato de arquivo não suportado. Use xlsx, xls, csv ou txt.")
         return None
 
-@st.cache_resource
-def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, tooltip_field, prov_label_config=None, mun_label_config=None, prov_border_width=1.0, prov_border_color="#000000", mun_border_width=0.5, mun_border_color="#808080"):
+def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, tooltip_field, prov_label_config=None, mun_label_config=None, prov_border_width=1.0, prov_border_color="#000000", mun_border_width=0.5, mun_border_color="#808080", message_placeholder=None):
     """
     Cria um mapa coroplético com base nos dados fornecidos, com opção de adicionar rótulos personalizados e configurar limites.
 
     Args:
-        _gdf: GeoDataFrame dos municípios (não hashável).
-        _gdf2: GeoDataFrame das províncias (não hashável).
+        _gdf: GeoDataFrame dos municípios.
+        _gdf2: GeoDataFrame das províncias.
         categorical_column: Coluna categórica para coloração.
         color_mapping: Dicionário mapeando categorias para cores.
         tooltip_field: Campo para exibir no tooltip.
-        prov_label_config: Dicionário com configurações de rótulos para províncias (column, font_size, font_color, font_name, bold).
-        mun_label_config: Dicionário com configurações de rótulos para municípios (column, font_size, font_color, font_name, bold).
+        prov_label_config: Configurações de rótulos para províncias (column, font_size, font_color, font_name, bold).
+        mun_label_config: Configurações de rótulos para municípios (column, font_size, font_color, font_name, bold).
         prov_border_width: Largura dos limites das províncias.
         prov_border_color: Cor dos limites das províncias.
         mun_border_width: Largura dos limites dos municípios.
         mun_border_color: Cor dos limites dos municípios.
+        message_placeholder: Objeto Streamlit para exibir mensagens de status.
 
     Returns:
         folium.Map: Mapa gerado, ou None em caso de erro.
     """
-    message_placeholder = st.empty()
+    if message_placeholder is None:
+        message_placeholder = st.empty()
     try:
-        # Verificar se os GeoDataFrames não estão vazios
         if _gdf.empty or _gdf2.empty:
             message_placeholder.error("Os shapefiles estão vazios. Verifique os dados carregados.")
             return None
-
-        # Verificar se a coluna categórica existe
         if categorical_column not in _gdf.columns:
             message_placeholder.error(f"A coluna '{categorical_column}' não foi encontrada no shapefile.")
             return None
-
-        # Verificar se a coluna de tooltip existe
         if tooltip_field not in _gdf.columns:
             message_placeholder.error(f"A coluna de tooltip '{tooltip_field}' não foi encontrada no shapefile.")
             return None
-
-        # Validar configurações de rótulos
         if prov_label_config and prov_label_config.get("column") and prov_label_config["column"] not in _gdf2.columns:
             message_placeholder.error(f"A coluna de rótulos '{prov_label_config['column']}' não foi encontrada no shapefile de províncias.")
             return None
         if mun_label_config and mun_label_config.get("column") and mun_label_config["column"] not in _gdf.columns:
             message_placeholder.error(f"A coluna de rótulos '{mun_label_config['column']}' não foi encontrada no shapefile de municípios.")
             return None
-
-        # Reprojetar para EPSG:4326, se necessário
         if _gdf.crs != "EPSG:4326":
             message_placeholder.info("Convertendo shapefile de municípios para EPSG:4326...")
             _gdf = _gdf.to_crs("EPSG:4326")
         if _gdf2.crs != "EPSG:4326":
             message_placeholder.info("Convertendo shapefile de províncias para EPSG:4326...")
             _gdf2 = _gdf2.to_crs("EPSG:4326")
-
-        # Validar geometrias
         if not _gdf.geometry.is_valid.all():
-            message_placeholder.warning("Algumas geometrias no shapefile de municípios são inválidas. Tentando corrigir...")
-            _gdf.geometry = _gdf.geometry.buffer(0)
+            message_placeholder.warning("Geometrias inválidas no shapefile de municípios. Corrigindo...")
+            _gdf.geometry = _gdf.geometry.make_valid()
         if not _gdf2.geometry.is_valid.all():
-            message_placeholder.warning("Algumas geometrias no shapefile de províncias são inválidas. Tentando corrigir...")
-            _gdf2.geometry = _gdf2.geometry.buffer(0)
-
-        # Verificar se há geometrias não nulas
+            message_placeholder.warning("Geometrias inválidas no shapefile de províncias. Corrigindo...")
+            _gdf2.geometry = _gdf2.geometry.make_valid()
         if _gdf.geometry.isna().any() or _gdf2.geometry.isna().any():
             message_placeholder.error("Alguns registros nos shapefiles não possuem geometrias válidas.")
             return None
-
-        # Centralizar o mapa
         minx, miny, maxx, maxy = _gdf.total_bounds
         latitude_central = (miny + maxy) / 2
         longitude_central = (minx + maxx) / 2
-
-        # Criar o mapa
-        message_placeholder.info("Construindo mapa...")
         m = folium.Map(location=[latitude_central, longitude_central], zoom_start=6, tiles=None)
-
-        # Adicionar camada de províncias
         prov = folium.FeatureGroup("Províncias", show=True).add_to(m)
         folium.GeoJson(
             _gdf2,
@@ -185,8 +187,6 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                 'fillOpacity': 1
             }
         ).add_to(prov)
-
-        # Adicionar camada de municípios com cores
         distr = folium.FeatureGroup("Municípios", show=True).add_to(m)
         for _, row in _gdf.iterrows():
             if pd.notna(row[categorical_column]) and pd.notna(row.geometry):
@@ -201,8 +201,6 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                     },
                     tooltip=f"{row[tooltip_field]}"
                 ).add_to(distr)
-
-        # Adicionar rótulos para províncias
         if prov_label_config and prov_label_config.get("column"):
             label_group_prov = folium.FeatureGroup("Rótulos Províncias", show=True).add_to(m)
             for _, row in _gdf2.iterrows():
@@ -215,8 +213,6 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                         popup=folium.Popup(f"{row[prov_label_config['column']]}", parse_html=True),
                         icon=folium.DivIcon(html=html)
                     ).add_to(label_group_prov)
-
-        # Adicionar rótulos para municípios
         if mun_label_config and mun_label_config.get("column"):
             label_group_mun = folium.FeatureGroup("Rótulos Municípios", show=True).add_to(m)
             for _, row in _gdf.iterrows():
@@ -229,21 +225,15 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                         popup=folium.Popup(f"{row[mun_label_config['column']]}", parse_html=True),
                         icon=folium.DivIcon(html=html)
                     ).add_to(label_group_mun)
-
-        # Adicionar camadas de fundo
-        # Adicionar camadas de fundo
         folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
         folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
         white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
         folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
-        folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
-
-        # Adicionar controles
+        folium.TileLayer("CartoDB dark_matter", name="Fundo Cinza", attr="Tiles © CartoDB").add_to(m)
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
         Fullscreen(position="topleft").add_to(m)
         MousePosition(position="topright", separator=" | ").add_to(m)
         m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-
         message_placeholder.empty()
         return m
     except KeyError as e:
