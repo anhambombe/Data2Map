@@ -9,7 +9,7 @@ import base64
 # Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
-    page_icon="dataonmapicon.png",
+    page_icon="dataonmapicon.icon",
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -65,7 +65,7 @@ st.markdown("""
     </style>
     <div class='header-container'>
         <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-        <img class="logo-image" src="{image_base64}" alt="Logo redonda brilhante">
+        <img class="logo-image" src="{image_base64}" alt="Logo redonda brilhandae">
     </div>
     <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
@@ -82,6 +82,23 @@ color_mapping_internal = {
     "Cinza": "gray",
     "Preto": "black"
 }
+
+def display_message(message_placeholder, message, message_type):
+    """
+    Exibe uma mensagem no Streamlit com base no tipo.
+
+    Args:
+        message_placeholder: Objeto Streamlit para exibir mensagens.
+        message: Texto da mensagem.
+        message_type: "info", "warning", ou "error".
+    """
+    if message_type == "info":
+        message_placeholder.info(message)
+    elif message_type == "warning":
+        message_placeholder.warning(message)
+    elif message_type == "error":
+        message_placeholder.error(message)
+    message_placeholder.empty()
 
 def choropleth_tab():
     st.subheader(":rainbow[Mapa Coroplético]")
@@ -120,13 +137,18 @@ def choropleth_tab():
 
     if shapefile_zip2 and shapefile_zip and excel_file:
         with st.spinner("Carregando arquivos..."):
-            gdf2 = load_shapefile(shapefile_zip2, message_placeholder)
-            gdf = load_shapefile(shapefile_zip, message_placeholder)
-            data = load_data_file(excel_file, sheet_name=sheet_name, message_placeholder=message_placeholder)
-
-        if gdf is None or gdf2 is None or data is None:
-            message_placeholder.error("Erro ao carregar os arquivos. Verifique os shapefiles e a tabela de dados.")
-            return
+            gdf2, msg, msg_type = load_shapefile(shapefile_zip2)
+            display_message(message_placeholder, msg, msg_type)
+            if gdf2 is None:
+                return
+            gdf, msg, msg_type = load_shapefile(shapefile_zip)
+            display_message(message_placeholder, msg, msg_type)
+            if gdf is None:
+                return
+            data, msg, msg_type = load_data_file(excel_file, sheet_name=sheet_name)
+            display_message(message_placeholder, msg, msg_type)
+            if data is None:
+                return
 
         # Seleção de colunas para união e categorias
         with st.sidebar.expander("Selecione as colunas"):
@@ -265,7 +287,7 @@ def choropleth_tab():
                 message_placeholder.error(f"A coluna de categorias '{categorical_column}' não foi encontrada no shapefile após a união.")
                 return
             with st.spinner("Gerando mapa..."):
-                m = create_choropleth_map(
+                m, msg, msg_type = create_choropleth_map(
                     gdf,
                     gdf2,
                     categorical_column,
@@ -276,20 +298,18 @@ def choropleth_tab():
                     prov_border_width=prov_border_width,
                     prov_border_color=prov_border_color,
                     mun_border_width=mun_border_width,
-                    mun_border_color=mun_border_color,
-                    message_placeholder=message_placeholder
+                    mun_border_color=mun_border_color
                 )
-            if m:
+                display_message(message_placeholder, msg, msg_type)
+                if m is None:
+                    return
                 add_legend(m, color_mapping, "Categorias")
-                st.session_state.map_buffer = io.BytesIO()
+                st.session_state.map_buffer = io.BtyesIO()
                 m.save(st.session_state.map_buffer, close_file=False)
                 st.session_state.map_buffer = st.session_state.map_buffer.getvalue()
                 with st.spinner("Renderizando mapa..."):
                     st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                 message_placeholder.success("Mapa gerado e renderizado com sucesso!")
-            else:
-                message_placeholder.error("Falha ao criar o mapa. Verifique os shapefiles e a coluna de categorias.")
-                return
 
         # Botão de download
         if st.session_state.map_buffer:
