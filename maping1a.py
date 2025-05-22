@@ -9,7 +9,7 @@ import base64
 # Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
-    page_icon="dataonmapicon.ico",
+    page_icon="dataonmapicon.png",
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -87,7 +87,7 @@ def choropleth_tab():
     st.subheader(":rainbow[Mapa Coroplético]")
     message_placeholder = st.empty()
 
-    # Inicializar map_buffer no session_state
+    # Inicializar estados no session_state
     if "map_buffer" not in st.session_state:
         st.session_state.map_buffer = None
     if "excel_key" not in st.session_state:
