@@ -9,7 +9,7 @@ import os
 from branca.element import Template, MacroElement
 import branca
 
-@st.cache_resource(hash_funcs={tempfile._TemporaryFileWrapper: lambda x: x.name})
+@st.cache_resource(hash_funcs={tempfile._TemporaryFileWrapper: lambda x: x.name, st.delta_generator.DeltaGenerator: lambda _: None})
 def load_shapefile(zip_file, message_placeholder):
     """
     Carrega um shapefile a partir de um arquivo ZIP.
@@ -60,7 +60,7 @@ def load_shapefile(zip_file, message_placeholder):
         message_placeholder.error(f"Erro inesperado ao processar o shapefile: {e}")
         return None
 
-@st.cache_resource
+@st.cache_resource(hash_funcs={st.delta_generator.DeltaGenerator: lambda _: None})
 def load_data_file(file, sheet_name=None, message_placeholder=None):
     """
     Carrega dados de arquivos Excel, CSV ou TXT.
