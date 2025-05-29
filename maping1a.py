@@ -5,6 +5,7 @@ from utils1a import load_shapefile, load_data_file, create_choropleth_map, add_l
 import io
 import pandas as pd
 import time
+import streamlit.components.v1 as components
 
 import branca
 from folium.plugins import Fullscreen, MeasureControl, MousePosition
@@ -363,7 +364,7 @@ folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 Fullscreen(position="topleft").add_to(m)
 MousePosition(position="topright", separator=" | ").add_to(m)
 m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-st_folium(m, width=900, height=600)
+#st_folium(m, width=900, height=600)
 
 choropleth_tab()
 
