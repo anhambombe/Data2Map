@@ -342,7 +342,10 @@ def choropleth_tab():
         message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
 # Executar a aba Map
-choropleth_tab()
+#choropleth_tab()
+m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
+st_folium(m, width=900, height=600)
+
 
 # Rodapé
 st.sidebar.markdown("""
