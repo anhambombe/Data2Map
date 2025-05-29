@@ -9,7 +9,8 @@ import os
 from branca.element import Template, MacroElement
 import branca
 
-@st.cache_resource
+#@st.cache_resource
+@st.cache_data
 def load_shapefile(zip_file):
     """
     Carrega um shapefile a partir de um arquivo ZIP.
@@ -51,7 +52,8 @@ def load_shapefile(zip_file):
         message_placeholder.error(f"Erro inesperado ao processar o shapefile: {e}")
         return None
 
-@st.cache_resource
+#@st.cache_resource
+@st.cache_data
 def load_data_file(file, sheet_name=None):
     """
     Carrega dados de arquivos Excel, CSV ou TXT.
