@@ -4,151 +4,137 @@ from streamlit_folium import st_folium
 from utils1a import load_shapefile, load_data_file, create_choropleth_map, add_legend
 import io
 import pandas as pd
-import base64
+import time
 
 # Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
-    page_icon="dataonmapicon.ico",
+    page_icon="dataonmapicon.png",
     layout="wide",
     initial_sidebar_state="auto"
 )
+#####################
+#import streamlit as st
+import base64
 
 # Função para converter a imagem em base64
 def get_image_base64(path):
-    try:
-        with open(path, "rb") as image_file:
-            encoded = base64.b64encode(image_file.read()).decode()
-        return f"data:image/ico;base64,{encoded}"
-    except FileNotFoundError:
-        st.error("Arquivo de ícone 'dataonmapicon.ico' não encontrado.")
-        return ""
+    with open(path, "rb") as image_file:
+        encoded = base64.b64encode(image_file.read()).decode()
+    return f"data:image/jpg;base64,{encoded}"
 
 image_base64 = get_image_base64("dataonmapicon.ico")
 
-# CSS para responsividade
-st.markdown("""
+# HTML + CSS com posicionamento acima da letra "p"
+st.markdown(f"""
     <style>
-        .reportview-container .main .block-container {
-            max-width: 100%;
+        .reportview-container .main .block-container {{
+            max-width: 1200px;
             padding-top: 2rem;
             padding-bottom: 2rem;
-        }
-        .folium-map {
+        }}
+        .folium-map {{
             width: 100% !important;
-            height: 80vh !important;
-            min-height: 500px !important;
-        }
-        h1, h4 {
+            height: 600px !important;
+            min-height: 600px !important;
+        }}
+        h1, h4 {{
             font-family: 'Segoe UI', 'Roboto', sans-serif;
-        }
-        .header-container {
+        }}
+        .header-container {{
             position: relative;
             text-align: center;
-        }
-        .logo-image {
+        }}
+        .logo-image {{
             position: absolute;
-            top: -10px;
-            left: 63%;
+            top: -10px;     /* Eleva a imagem */
+            left: 63%;      /* Ajuste horizontal até ficar sobre o "p" */
             width: 50px;
             height: 50px;
             border-radius: 50%;
             border: 2px solid #1ABC9C;
             box-shadow: 0 0 8px #1ABC9C;
             animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 8px #1ABC9C; }
-            50% { box-shadow: 0 0 20px #1ABC9C; }
-            100% { box-shadow: 0 0 8px #1ABC9C; }
-        }
+        }}
+        @keyframes pulse {{
+            0% {{
+                box-shadow: 0 0 8px #1ABC9C;
+            }}
+            50% {{
+                box-shadow: 0 0 20px #1ABC9C;
+            }}
+            100% {{
+                box-shadow: 0 0 8px #1ABC9C;
+            }}
+        }}
     </style>
+
     <div class='header-container'>
         <h1 style='color: #2C3E50; font-weight: bold; margin: 0;'>📍 <span style='color: #1ABC9C;'>DataOnMap</span></h1>
-        <img class="logo-image" src="{image_base64}" alt="Logo redonda brilhandae">
+        <img class="logo-image" src="{image_base64}" alt="Logo redonda brilhante">
     </div>
     <h4 style='text-align: center; color: #7F8C8D;'>Simplificando a elaboração de mapas coropléticos</h4>
 """, unsafe_allow_html=True)
 
+
+
+
+
+#####################################################
+
+
+
+
 # Mapeamento de cores em português para valores em inglês
 color_mapping_internal = {
-    "Vermelho": "red",
-    "Verde": "green",
+    "Vermelho 1": "red",
+    "Verde 3": "green",
     "Branco": "white",
     "Amarelo": "yellow",
     "Azul": "blue",
     "Ciano": "cyan",
     "Laranja": "orange",
-    "Cinza": "gray",
+    "Cinza 3": "gray",
     "Preto": "black"
 }
 
-def display_message(message_placeholder, message, message_type):
-    """
-    Exibe uma mensagem no Streamlit com base no tipo.
-
-    Args:
-        message_placeholder: Objeto Streamlit para exibir mensagens.
-        message: Texto da mensagem.
-        message_type: "info", "warning", ou "error".
-    """
-    if message_type == "info":
-        message_placeholder.info(message)
-    elif message_type == "warning":
-        message_placeholder.warning(message)
-    elif message_type == "error":
-        message_placeholder.error(message)
-    message_placeholder.empty()
-
+# Função para a aba Map
 def choropleth_tab():
     st.subheader(":rainbow[Mapa Coroplético]")
     message_placeholder = st.empty()
 
-    # Inicializar estados no session_state
-    if "map_buffer" not in st.session_state:
-        st.session_state.map_buffer = None
-    if "excel_key" not in st.session_state:
-        st.session_state.excel_key = 0
-    if "txt_separator" not in st.session_state:
-        st.session_state.txt_separator = ","
-
     # Carregamento de arquivos na barra lateral
     with st.sidebar.expander("Leitura de dados"):
-        shapefile_zip2 = st.file_uploader("Shapefile das Províncias (.zip)", type=["zip"], key="shapefile_prov")
-        shapefile_zip = st.file_uploader("Shapefile dos Municípios (.zip)", type=["zip"], key="shapefile_mun")
-        excel_file = st.file_uploader("Tabela de Dados", type=["xlsx", "xls", "txt", "csv"], key=f"excel_{st.session_state.excel_key}")
+        shapefile_zip2 = st.file_uploader("Shapefile das Províncias (.zip)", type=["zip"])
+        shapefile_zip = st.file_uploader("Shapefile dos Municípios (.zip)", type=["zip"])
+        excel_file = st.file_uploader("Tabela de Dados", type=["xlsx", "xls", "txt", "csv"])
 
+        # Seleção de planilha para arquivos Excel
         sheet_name = None
         if excel_file and excel_file.type in ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.ms-excel"]:
             try:
                 xl = pd.ExcelFile(excel_file)
                 sheet_names = xl.sheet_names
                 if sheet_names:
-                    sheet_name = st.selectbox("Selecione a planilha:", sheet_names, key="sheet_select")
-                    st.session_state.excel_key += 1  # Resetar chave para forçar recarregamento
+                    sheet_name = st.selectbox("Selecione a planilha:", sheet_names)
                 else:
                     message_placeholder.error("O arquivo Excel não contém planilhas válidas.")
                     return
             except Exception as e:
                 message_placeholder.error(f"Erro ao ler as planilhas do arquivo Excel: {e}")
                 return
-        elif excel_file and excel_file.type == "text/plain":
-            st.session_state.txt_separator = st.text_input("Separador para arquivo TXT (ex.: ',', ';')", value=st.session_state.txt_separator, key="txt_separator")
 
+    # Verificar se todos os arquivos foram carregados
     if shapefile_zip2 and shapefile_zip and excel_file:
-        with st.spinner("Carregando arquivos..."):
-            gdf2, msg, msg_type = load_shapefile(shapefile_zip2)
-            display_message(message_placeholder, msg, msg_type)
-            if gdf2 is None:
-                return
-            gdf, msg, msg_type = load_shapefile(shapefile_zip)
-            display_message(message_placeholder, msg, msg_type)
-            if gdf is None:
-                return
-            data, msg, msg_type = load_data_file(excel_file, sheet_name=sheet_name)
-            display_message(message_placeholder, msg, msg_type)
-            if data is None:
-                return
+        message_placeholder.info("Carregando arquivos...")
+        gdf2 = load_shapefile(shapefile_zip2)
+        gdf = load_shapefile(shapefile_zip)
+        data = load_data_file(excel_file, sheet_name=sheet_name)
+        message_placeholder.empty()
+
+        if gdf is None or gdf2 is None or data is None:
+            message_placeholder.error("Erro ao carregar os arquivos. Verifique se os shapefiles contêm arquivos .shp, .shx, .dbf e se a tabela de dados está no formato correto (xlsx, xls, csv ou txt).")
+            return
 
         # Seleção de colunas para união e categorias
         with st.sidebar.expander("Selecione as colunas"):
@@ -190,6 +176,7 @@ def choropleth_tab():
                     )
                 with col2:
                     prov_label_config["bold"] = st.checkbox("Texto em negrito (Províncias)", key="bold_prov")
+
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
                     fontcolor_pt1 = st.radio(
@@ -222,6 +209,7 @@ def choropleth_tab():
                     )
                 with col2:
                     mun_label_config["bold"] = st.checkbox("Texto em negrito (Municípios)", key="bold_mun")
+
                 col1, col2 = st.columns([0.5, 0.5])
                 with col1:
                     fontcolor_pt = st.radio(
@@ -240,6 +228,7 @@ def choropleth_tab():
 
         # Seleção de cores para categorias
         color_mapping = {}
+        map_buffer = None  # Inicializar map_buffer localmente
         with st.sidebar.expander("Selecione as cores"):
             if categorical_column and categorical_column in data.columns:
                 unique_categories = data[categorical_column].dropna().unique()
@@ -249,12 +238,13 @@ def choropleth_tab():
                         with cols[i % len(cols)]:
                             color_mapping[category] = st.color_picker(f"Cor para {category}", "#FF0000", key=f"color_{category}")
                 else:
-                    message_placeholder.warning("A coluna de categorias selecionada não contém valores válidos.")
+                    message_placeholder.warning("A coluna de categorias selecionada não contém valores válidos. Selecione uma coluna com dados.")
             else:
                 message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
 
         # Botão para gerar o mapa
         if st.sidebar.button("Gerar Mapa"):
+            # Validar configurações obrigatórias
             if not (shapefile_zip2 and shapefile_zip and excel_file):
                 message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
                 return
@@ -264,75 +254,86 @@ def choropleth_tab():
             if not categorical_column:
                 message_placeholder.error("Selecione a coluna de categorias.")
                 return
-            # Validar colunas de junção
-            if join_column_shapefile and join_column_data:
-                try:
-                    if gdf[join_column_shapefile].dtype != data[join_column_data].dtype:
-                        message_placeholder.error("As colunas de união têm tipos de dados diferentes. Converta para o mesmo tipo.")
-                        return
-                except KeyError:
-                    message_placeholder.error("As colunas de união selecionadas não existem nos dados.")
-                    return
-            with st.spinner("Unindo dados..."):
-                try:
-                    gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
-                    message_placeholder.success("Dados unidos com sucesso!")
-                except ValueError as e:
-                    message_placeholder.error(f"Erro ao unir os dados: {e}")
-                    return
-                except Exception as e:
-                    message_placeholder.error(f"Erro inesperado ao unir os dados: {e}")
-                    return
+
+            # Realizar a união dos dados
+            message_placeholder.info("Unindo dados...")
+            try:
+                gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
+                message_placeholder.success("Dados unidos com sucesso!")
+            except ValueError as e:
+                message_placeholder.error(f"Erro ao unir os dados: {e}. Verifique se as colunas selecionadas contêm valores compatíveis (ex.: mesmo tipo de dado).")
+                return
+            except Exception as e:
+                message_placeholder.error(f"Erro inesperado ao unir os dados: {e}")
+                return
+
+            # Verificar se a coluna categórica existe no gdf após a união
             if categorical_column not in gdf.columns:
                 message_placeholder.error(f"A coluna de categorias '{categorical_column}' não foi encontrada no shapefile após a união.")
                 return
-            with st.spinner("Gerando mapa..."):
-                m, msg, msg_type = create_choropleth_map(
-                    gdf,
-                    gdf2,
-                    categorical_column,
-                    color_mapping,
-                    join_column_data,
-                    prov_label_config=prov_label_config,
-                    mun_label_config=mun_label_config,
-                    prov_border_width=prov_border_width,
-                    prov_border_color=prov_border_color,
-                    mun_border_width=mun_border_width,
-                    mun_border_color=mun_border_color
-                )
-                display_message(message_placeholder, msg, msg_type)
-                if m is None:
-                    return
-                add_legend(m, color_mapping, "Categorias")
-                st.session_state.map_buffer = io.BtyesIO()
-                m.save(st.session_state.map_buffer, close_file=False)
-                st.session_state.map_buffer = st.session_state.map_buffer.getvalue()
-                with st.spinner("Renderizando mapa..."):
-                    st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
-                message_placeholder.success("Mapa gerado e renderizado com sucesso!")
 
-        # Botão de download
-        if st.session_state.map_buffer:
+            # Criar o mapa
+            message_placeholder.info("Gerando mapa...")
+            m = create_choropleth_map(
+                gdf,
+                gdf2,
+                categorical_column,
+                color_mapping,
+                join_column_data,
+                prov_label_config=prov_label_config,
+                mun_label_config=mun_label_config,
+                prov_border_width=prov_border_width,
+                prov_border_color=prov_border_color,
+                mun_border_width=mun_border_width,
+                mun_border_color=mun_border_color
+            )
+            message_placeholder.empty()
+
+            if m:
+                #message_placeholder.success("Mapa gerado com sucesso!")
+                add_legend(m, color_mapping, "Categorias")
+                # Gerar o buffer para download
+                map_buffer = io.BytesIO()
+                m.save(map_buffer, close_file=False)
+                map_buffer = map_buffer.getvalue()
+                message_placeholder.success("Mapa gerado com sucesso!")
+                # Renderizar o mapa
+                message_placeholder.info("Renderizando mapa...")
+                try:
+                    st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
+                    message_placeholder.success("Mapa renderizado com sucesso!")
+                    time.sleep(5)
+                    message_placeholder.empty()
+                except Exception as e:
+                    message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
+                    return
+            else:
+                message_placeholder.error("Falha ao criar o mapa. Verifique se os shapefiles contêm geometrias válidas e se a coluna de categorias contém dados.")
+                return
+
+        # Opção para baixar o mapa como HTML
+        if map_buffer:
             st.download_button(
                 label="Baixar Mapa como HTML",
-                data=st.session_state.map_buffer,
+                data=map_buffer,
                 file_name="mapa.html",
                 mime="text/html",
                 key="download_map"
             )
-            if st.checkbox("Salvar mapa"):
-                nome = st.text_input("Nome do mapa:", "meu_mapa")
-                if nome:
-                    st.download_button(
-                        label="Baixar Mapa como HTML",
-                        data=st.session_state.map_buffer,
-                        file_name=f"{nome}.html",
-                        mime="text/html",
-                        key="download_map_custom"
-                    )
-                else:
-                    message_placeholder.warning("Insira um nome para o mapa.")
 
+        # Exportação do mapa com nome personalizado
+        if map_buffer and st.checkbox("Salvar mapa"):
+            nome = st.text_input("Nome do mapa:", "meu_mapa")
+            if nome:
+                st.download_button(
+                    label="Baixar Mapa como HTML",
+                    data=map_buffer,
+                    file_name=f"{nome}.html",
+                    mime="text/html",
+                    key="download_map_custom"
+                )
+            else:
+                message_placeholder.warning("Insira um nome para o mapa.")
     else:
         message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
@@ -342,6 +343,6 @@ choropleth_tab()
 # Rodapé
 st.sidebar.markdown("""
 ---
-**DataOnMap** © 2024 | **Devs.com**  
+**EasyMap** © 2024 | **Devs.com**  
 **Versão:** 1.0.0
 """)
