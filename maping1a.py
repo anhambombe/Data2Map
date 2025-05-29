@@ -138,9 +138,9 @@ def choropleth_tab():
 
         # Seleção de colunas para união e categorias
         with st.sidebar.expander("Selecione as colunas"):
-            join_column_shapefile = st.selectbox("Coluna de união (Shapefile):" list(gdf.columns))#, [None] +
-            join_column_data = st.selectbox("Coluna de união (Tabela):" list(data.columns)) #, [None] +
-            categorical_column = st.selectbox("Coluna de categorias:" list(data.columns))#, [None] +
+            join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", list(gdf.columns))#, [None] +
+            join_column_data = st.selectbox("Coluna de união (Tabela):", list(data.columns)) #, [None] +
+            categorical_column = st.selectbox("Coluna de categorias:", list(data.columns))#, [None] +
 
         # Configuração dos limites
         with st.sidebar.expander("Configurar limites"):
