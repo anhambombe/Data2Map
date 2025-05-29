@@ -98,7 +98,7 @@ def load_data_file(file, sheet_name=None):
         message_placeholder.error("Formato de arquivo não suportado. Use xlsx, xls, csv ou txt.")
         return None
 
-@st.cache_resource
+#@st.cache_resource
 def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, tooltip_field, prov_label_config=None, mun_label_config=None, prov_border_width=1.0, prov_border_color="#000000", mun_border_width=0.5, mun_border_color="#808080"):
     """
     Cria um mapa coroplético com base nos dados fornecidos, com opção de adicionar rótulos personalizados e configurar limites.
