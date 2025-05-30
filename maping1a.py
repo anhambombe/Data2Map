@@ -313,8 +313,8 @@ def choropleth_tab():
                     #map_html = m._repr_html_()
                     #st.components.v1.html(map_html, height=600, scrolling=True)
                     if map_buffer:
-                        st.download_button(
-                        label="Baixar Mapa como HTML",
+                        st.sidebar.download_button(
+                        label="📥Baixar Mapa como HTML",
                         data=map_buffer,
                         file_name="mapa.html",
                         mime="text/html",
@@ -357,20 +357,20 @@ def choropleth_tab():
         message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
 # Executar a aba Map
-m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
+#m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
 
 # Adicionar camadas de fundo
-folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
-folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
-white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
-folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
-folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
+#folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
+#folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
+#white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
+#folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
+#folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
 
 # Adicionar controles
-folium.LayerControl(position="topleft", collapsed=True).add_to(m)
-Fullscreen(position="topleft").add_to(m)
-MousePosition(position="topright", separator=" | ").add_to(m)
-m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
+#folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+#Fullscreen(position="topleft").add_to(m)
+#MousePosition(position="topright", separator=" | ").add_to(m)
+#m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
 #st_folium(m, width=900, height=600)
 
 choropleth_tab()
