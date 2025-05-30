@@ -309,9 +309,16 @@ def choropleth_tab():
                 # Renderizar o mapa
                 message_placeholder.info("Renderizando mapa...")
                 try:
-                    st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
+                    #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                     #map_html = m._repr_html_()
                     #st.components.v1.html(map_html, height=600, scrolling=True)
+                    if map_buffer:
+                        st.download_button(
+                        label="Baixar Mapa como HTML",
+                        data=map_buffer,
+                        file_name="mapa.html",
+                        mime="text/html",
+                        key="download_map")
 
                     message_placeholder.success("Mapa renderizado com sucesso!")
                     time.sleep(5)
