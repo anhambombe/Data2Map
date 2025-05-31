@@ -260,6 +260,13 @@ def choropleth_tab():
             if not (join_column_shapefile and join_column_data):
                 message_placeholder.error("Selecione as colunas de união para o shapefile e a tabela de dados.")
                 return
+            if not join_column_shapefile:
+                message_placeholder.error("Selecione a coluna do shapefile que tem valores para união.")
+                return
+                
+            if not join_column_data:
+                message_placeholder.error("Selecione a coluna da tabela de dados que tem valores para união.")
+                return
             if not categorical_column:
                 message_placeholder.error("Selecione a coluna de categorias.")
                 return
@@ -307,7 +314,7 @@ def choropleth_tab():
                 map_buffer = map_buffer.getvalue()
                 message_placeholder.success("Mapa gerado com sucesso!")
                 # Renderizar o mapa
-                message_placeholder.info("Renderizando mapa...")
+                message_placeholder.info("Renderizando mapa... KKK")
                 try:
                     #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                     #map_html = m._repr_html_()
