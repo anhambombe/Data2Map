@@ -252,7 +252,7 @@ def choropleth_tab():
                 message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
 
         # Botão para gerar o mapa
-        if st.sidebar.checkbox("Gerar Mapa"):
+        if st.sidebar.checkbox("Gerar Mapa1"):
             # Validar configurações obrigatórias
             if not (shapefile_zip2 and shapefile_zip and excel_file):
                 message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
@@ -260,11 +260,11 @@ def choropleth_tab():
             if not (join_column_shapefile and join_column_data):
                 message_placeholder.error("Selecione as colunas de união para o shapefile e a tabela de dados.")
                 return
-            if not join_column_shapefile:
+            if not join_column_shapefile or join_column_shapefile is None:
                 message_placeholder.error("Selecione a coluna do shapefile que tem valores para união.")
                 return
                 
-            if not join_column_data:
+            if not join_column_data or join_column_data is None:
                 message_placeholder.error("Selecione a coluna da tabela de dados que tem valores para união.")
                 return
             if not categorical_column:
