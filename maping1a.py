@@ -252,7 +252,7 @@ def choropleth_tab():
                 message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
 
         # Botão para gerar o mapa
-        if st.sidebar.checkbox("Gerar Mapa1", key="key"):
+        if st.sidebar.button("Gerar Mapa"):
             # Validar configurações obrigatórias
             if not (shapefile_zip2 and shapefile_zip and excel_file):
                 message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
