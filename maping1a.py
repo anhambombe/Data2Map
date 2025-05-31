@@ -306,13 +306,13 @@ def choropleth_tab():
             message_placeholder.empty()
 
             if m:
-                #message_placeholder.success("Mapa gerado com sucesso!")
-                add_legend(m, color_mapping, "Categorias")
+                message_placeholder.success("Mapa gerado com sucesso!1")
+                #add_legend(m, color_mapping, "Categorias")
                 # Gerar o buffer para download
                 map_buffer = io.BytesIO()
                 m.save(map_buffer, close_file=False)
                 map_buffer = map_buffer.getvalue()
-                message_placeholder.success("Mapa gerado com sucesso!")
+                message_placeholder.success("Mapa gerado com sucesso!2")
                 # Renderizar o mapa
                 message_placeholder.info("Renderizando mapa... KKK")
                 try:
