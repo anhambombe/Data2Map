@@ -325,7 +325,7 @@ def choropleth_tab():
                         data=map_buffer,
                         file_name="mapa.html",
                         mime="text/html",
-                        key="download_map")
+                        key="download_mapq")
 
                     message_placeholder.success("Mapa renderizado com sucesso!")
                     time.sleep(5)
