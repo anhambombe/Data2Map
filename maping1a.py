@@ -253,122 +253,124 @@ def choropleth_tab():
 
         # Botão para gerar o mapa
         #col1, col2=st.columns(2)
-        if st.sidebar.button("Gerar Mapa"):
-        progress = st.progress(0, text="Validando as configurações obrigatórias...")
-            # Validar configurações obrigatórias
-            if not (shapefile_zip2 and shapefile_zip and excel_file):
-                message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
-                return
-            if not (join_column_shapefile and join_column_data):
-                message_placeholder.error("Selecione as colunas de união para o shapefile e a tabela de dados.")
-                return
-            if not join_column_shapefile or join_column_shapefile is None:
-                message_placeholder.error("Selecione a coluna do shapefile que tem valores para união.")
-                return
-                
-            if not join_column_data or join_column_data is None:
-                message_placeholder.error("Selecione a coluna da tabela de dados que tem valores para união.")
-                return
-            if not categorical_column:
-                message_placeholder.error("Selecione a coluna de categorias.")
-                return
-
-            # Realizar a união dos dados
-            message_placeholder.info("Unindo dados...")
-            progress = st.progress(10, text="Unindo dados......")
-            try:
-                gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
-                message_placeholder.success("Dados unidos com sucesso!")
-            except ValueError as e:
-                message_placeholder.error(f"Erro ao unir os dados: {e}. Verifique se as colunas selecionadas contêm valores compatíveis (ex.: mesmo tipo de dado).")
-                return
-            except Exception as e:
-                message_placeholder.error(f"Erro inesperado ao unir os dados: {e}")
-                return
-
-            # Verificar se a coluna categórica existe no gdf após a união
-            if categorical_column not in gdf.columns:
-                message_placeholder.error(f"A coluna de categorias '{categorical_column}' não foi encontrada no shapefile após a união.")
-                return
-
-            # Criar o mapa
-            message_placeholder.info("Gerando mapa...")
-            progress = st.progress(20, text="Iniciando geração do mapa...")
-            m = create_choropleth_map(
-                gdf,
-                gdf2,
-                categorical_column,
-                color_mapping,
-                join_column_data,
-                prov_label_config=prov_label_config,
-                mun_label_config=mun_label_config,
-                prov_border_width=prov_border_width,
-                prov_border_color=prov_border_color,
-                mun_border_width=mun_border_width,
-                mun_border_color=mun_border_color
-            )
-            message_placeholder.empty()
-
-            if m:
-                message_placeholder.success("Mapa gerado com sucesso!")
-                progress = st.progress(60, text="Adicionando legenda no mapa...")
-                add_legend(m, color_mapping, "Categorias")
-                # Gerar o buffer para download
-                map_buffer = io.BytesIO()
-                m.save(map_buffer, close_file=False)
-                map_buffer = map_buffer.getvalue()
-                message_placeholder.success("Legenda gerada com sucesso")
-                # Renderizar o mapa
-                #message_placeholder.info("Preparando o mapa para download...")
-                progress = st.progress(80, text="Gerando o buffer para download...")
-                try:
-                    #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
-                    #map_html = m._repr_html_()
-                    #st.components.v1.html(map_html, height=600, scrolling=True)
-                    if map_buffer:
-                        st.sidebar.download_button(
-                        label="📥Baixar Mapa como HTML",
-                        data=map_buffer,
-                        file_name="mapa.html",
-                        mime="text/html",
-                        key="download_mapq")
-
-                    message_placeholder.success("Todos elementos foram adicionados ao mapa com sucesso!")
-                    progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
-                    time.sleep(5)
-                    message_placeholder.empty()
-                except Exception as e:
-                    message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
+        with col1:
+            if st.sidebar.button("Gerar Mapa"):
+                progress = st.progress(0, text="Validando as configurações obrigatórias...")
+                # Validar configurações obrigatórias
+                if not (shapefile_zip2 and shapefile_zip and excel_file):
+                    message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
                     return
-            else:
-                message_placeholder.error("Falha ao criar o mapa. Verifique se os shapefiles contêm geometrias válidas e se a coluna de categorias contém dados.")
-                return
-
-        # Opção para baixar o mapa como HTML
-        #if map_buffer:
-            #st.download_button(
-                #label="Baixar Mapa como HTML",
-                #data=map_buffer,
-                #file_name="mapa.html",
-                #mime="text/html",
-                #key="download_map"
-            #)
-
-        # Exportação do mapa com nome personalizado
-        if map_buffer and st.checkbox("Salvar mapa"):
-            nome = st.text_input("Nome do mapa:", "meu_mapa")
-            if nome:
-                st.download_button(
-                    label="Baixar Mapa como HTML",
-                    data=map_buffer,
-                    file_name=f"{nome}.html",
-                    mime="text/html",
-                    key="download_map_custom"
+                if not (join_column_shapefile and join_column_data):
+                    message_placeholder.error("Selecione as colunas de união para o shapefile e a tabela de dados.")
+                    return
+                if not join_column_shapefile or join_column_shapefile is None:
+                    message_placeholder.error("Selecione a coluna do shapefile que tem valores para união.")
+                    return
+                    
+                if not join_column_data or join_column_data is None:
+                    message_placeholder.error("Selecione a coluna da tabela de dados que tem valores para união.")
+                    return
+                if not categorical_column:
+                    message_placeholder.error("Selecione a coluna de categorias.")
+                    return
+    
+                # Realizar a união dos dados
+                message_placeholder.info("Unindo dados...")
+                progress = st.progress(10, text="Unindo dados......")
+                try:
+                    gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
+                    message_placeholder.success("Dados unidos com sucesso!")
+                except ValueError as e:
+                    message_placeholder.error(f"Erro ao unir os dados: {e}. Verifique se as colunas selecionadas contêm valores compatíveis (ex.: mesmo tipo de dado).")
+                    return
+                except Exception as e:
+                    message_placeholder.error(f"Erro inesperado ao unir os dados: {e}")
+                    return
+    
+                # Verificar se a coluna categórica existe no gdf após a união
+                if categorical_column not in gdf.columns:
+                    message_placeholder.error(f"A coluna de categorias '{categorical_column}' não foi encontrada no shapefile após a união.")
+                    return
+    
+                # Criar o mapa
+                message_placeholder.info("Gerando mapa...")
+                progress = st.progress(20, text="Iniciando geração do mapa...")
+                m = create_choropleth_map(
+                    gdf,
+                    gdf2,
+                    categorical_column,
+                    color_mapping,
+                    join_column_data,
+                    prov_label_config=prov_label_config,
+                    mun_label_config=mun_label_config,
+                    prov_border_width=prov_border_width,
+                    prov_border_color=prov_border_color,
+                    mun_border_width=mun_border_width,
+                    mun_border_color=mun_border_color
                 )
-            else:
-                message_placeholder.warning("Insira um nome para o mapa.")
-    else:
-        message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
+                message_placeholder.empty()
+    
+                if m:
+                    message_placeholder.success("Mapa gerado com sucesso!")
+                    progress = st.progress(60, text="Adicionando legenda no mapa...")
+                    add_legend(m, color_mapping, "Categorias")
+                    # Gerar o buffer para download
+                    map_buffer = io.BytesIO()
+                    m.save(map_buffer, close_file=False)
+                    map_buffer = map_buffer.getvalue()
+                    message_placeholder.success("Legenda gerada com sucesso")
+                    # Renderizar o mapa
+                    #message_placeholder.info("Preparando o mapa para download...")
+                    progress = st.progress(80, text="Gerando o buffer para download...")
+                    try:
+                        #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
+                        with col2:
+                            #map_html = m._repr_html_()
+                            #st.components.v1.html(map_html, height=600, scrolling=True)
+                            if map_buffer:
+                                st.sidebar.download_button(
+                                label="📥Baixar Mapa como HTML",
+                                data=map_buffer,
+                                file_name="mapa.html",
+                                mime="text/html",
+                                key="download_mapq")
+    
+                        message_placeholder.success("Todos elementos foram adicionados ao mapa com sucesso!")
+                        progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
+                        time.sleep(5)
+                        message_placeholder.empty()
+                    except Exception as e:
+                        message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
+                        return
+                else:
+                    message_placeholder.error("Falha ao criar o mapa. Verifique se os shapefiles contêm geometrias válidas e se a coluna de categorias contém dados.")
+                    return
+    
+            # Opção para baixar o mapa como HTML
+            #if map_buffer:
+                #st.download_button(
+                    #label="Baixar Mapa como HTML",
+                    #data=map_buffer,
+                    #file_name="mapa.html",
+                    #mime="text/html",
+                    #key="download_map"
+                #)
+    
+            # Exportação do mapa com nome personalizado
+            if map_buffer and st.checkbox("Salvar mapa"):
+                nome = st.text_input("Nome do mapa:", "meu_mapa")
+                if nome:
+                    st.download_button(
+                        label="Baixar Mapa como HTML",
+                        data=map_buffer,
+                        file_name=f"{nome}.html",
+                        mime="text/html",
+                        key="download_map_custom"
+                    )
+                else:
+                    message_placeholder.warning("Insira um nome para o mapa.")
+        else:
+            message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
 # Executar a aba Map
 #m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
