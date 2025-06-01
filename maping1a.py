@@ -254,7 +254,7 @@ def choropleth_tab():
         # Botão para gerar o mapa
         #col1, col2=st.columns(2)
         with col1:
-            if st.sidebar.button("Gerar Mapa"):
+            if st.sidebar.checkbox("Gerar Mapa"):
                 progress = st.progress(0, text="Validando as configurações obrigatórias...")
                 # Validar configurações obrigatórias
                 if not (shapefile_zip2 and shapefile_zip and excel_file):
