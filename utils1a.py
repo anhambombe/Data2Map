@@ -284,7 +284,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
         Fullscreen(position="topleft").add_to(m)
         MousePosition(position="topright", separator=" | ").add_to(m)
         m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-        LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
+        
         folium.plugins.Geocoder(position="topleft").add_to(m)
 
         # Adicionar o controle de desenho
@@ -302,6 +302,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
             },
             edit_options={"poly": {"allowIntersection": False}}  # Editar sem interseções
         ).add_to(m)
+        LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
 
         message_placeholder.empty()
         return m
