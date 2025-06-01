@@ -252,6 +252,7 @@ def choropleth_tab():
                 message_placeholder.info("Selecione uma coluna de categorias para configurar as cores.")
 
         # Botão para gerar o mapa
+        #col1, col2=st.columns(2)
         if st.sidebar.button("Gerar Mapa"):
             # Validar configurações obrigatórias
             if not (shapefile_zip2 and shapefile_zip and excel_file):
@@ -290,6 +291,7 @@ def choropleth_tab():
 
             # Criar o mapa
             message_placeholder.info("Gerando mapa...")
+            progress = st.progress(0, text="Iniciando geração do mapa...")
             m = create_choropleth_map(
                 gdf,
                 gdf2,
@@ -306,15 +308,17 @@ def choropleth_tab():
             message_placeholder.empty()
 
             if m:
-                message_placeholder.success("Mapa gerado com sucesso!1")
-                #add_legend(m, color_mapping, "Categorias")
+                message_placeholder.success("Mapa gerado com sucesso!")
+                progress = st.progress(60, text="Adicionando legenda no mapa...")
+                add_legend(m, color_mapping, "Categorias")
                 # Gerar o buffer para download
                 map_buffer = io.BytesIO()
                 m.save(map_buffer, close_file=False)
                 map_buffer = map_buffer.getvalue()
-                message_placeholder.success("Mapa gerado com sucesso!2")
+                message_placeholder.success("Legenda gerada com sucesso")
                 # Renderizar o mapa
-                message_placeholder.info("Renderizando mapa... KKK")
+                #message_placeholder.info("Preparando o mapa para download...")
+                progress = st.progress(60, text="Gerando o buffer para download...")
                 try:
                     #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                     #map_html = m._repr_html_()
@@ -327,7 +331,8 @@ def choropleth_tab():
                         mime="text/html",
                         key="download_mapq")
 
-                    message_placeholder.success("Mapa renderizado com sucesso!")
+                    message_placeholder.success("Todos elementos foram adicionados ao mapa com sucesso!")
+                    progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
                     time.sleep(5)
                     message_placeholder.empty()
                 except Exception as e:
@@ -338,14 +343,14 @@ def choropleth_tab():
                 return
 
         # Opção para baixar o mapa como HTML
-        if map_buffer:
-            st.download_button(
-                label="Baixar Mapa como HTML",
-                data=map_buffer,
-                file_name="mapa.html",
-                mime="text/html",
-                key="download_map"
-            )
+        #if map_buffer:
+            #st.download_button(
+                #label="Baixar Mapa como HTML",
+                #data=map_buffer,
+                #file_name="mapa.html",
+                #mime="text/html",
+                #key="download_map"
+            #)
 
         # Exportação do mapa com nome personalizado
         if map_buffer and st.checkbox("Salvar mapa"):
