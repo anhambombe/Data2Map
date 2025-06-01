@@ -303,6 +303,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
             edit_options={"poly": {"allowIntersection": False}}  # Editar sem interseções
         ).add_to(m)
         LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
+        folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
         message_placeholder.empty()
         return m
