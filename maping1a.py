@@ -369,8 +369,8 @@ def choropleth_tab():
                     )
                 else:
                     message_placeholder.warning("Insira um nome para o mapa.")
-        else:
-            message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
+            else:
+                message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
 # Executar a aba Map
 #m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
