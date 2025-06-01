@@ -327,13 +327,13 @@ def choropleth_tab():
                         with col2:
                             #map_html = m._repr_html_()
                             #st.components.v1.html(map_html, height=600, scrolling=True)
-                            if map_buffer:
-                                st.sidebar.download_button(
-                                label="📥Baixar Mapa como HTML",
-                                data=map_buffer,
-                                file_name="mapa.html",
-                                mime="text/html",
-                                key="download_mapq")
+                            #if map_buffer:
+                            st.sidebar.download_button(
+                            label="📥Baixar Mapa como HTML",
+                            data=map_buffer,
+                            file_name="mapa.html",
+                            mime="text/html",
+                            key="download_mapq")
     
                         message_placeholder.success("Todos elementos foram adicionados ao mapa com sucesso!")
                         progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
