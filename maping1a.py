@@ -400,6 +400,7 @@ choropleth_tab()
 # Rodapé
 st.sidebar.markdown("""
 ---
-**EasyMap** © 2024 | **Devs.com**  | Anlovi-Lalovi 
+**EasyMap** © 2024 | **Devs.com**  | 
 **Versão:** 1.0.0
 """)
+st.sidebar.image("https://scidar.org/wp-content/uploads/2021/02/cropped-Big_no-bg-1-1.png", caption="", use_container_width=True)
