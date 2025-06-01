@@ -396,6 +396,6 @@ choropleth_tab()
 # Rodapé
 st.sidebar.markdown("""
 ---
-**EasyMap** © 2024 | **Devs.com**  
+**EasyMap** © 2024 | **Devs.com**  | Anlovi-Lalovi 
 **Versão:** 1.0.0
 """)
