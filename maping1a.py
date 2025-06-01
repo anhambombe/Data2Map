@@ -254,6 +254,7 @@ def choropleth_tab():
         # Botão para gerar o mapa
         #col1, col2=st.columns(2)
         if st.sidebar.button("Gerar Mapa"):
+        progress = st.progress(0, text="Validando as configurações obrigatórias...")
             # Validar configurações obrigatórias
             if not (shapefile_zip2 and shapefile_zip and excel_file):
                 message_placeholder.error("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
@@ -274,6 +275,7 @@ def choropleth_tab():
 
             # Realizar a união dos dados
             message_placeholder.info("Unindo dados...")
+            progress = st.progress(10, text="Unindo dados......")
             try:
                 gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
                 message_placeholder.success("Dados unidos com sucesso!")
@@ -291,7 +293,7 @@ def choropleth_tab():
 
             # Criar o mapa
             message_placeholder.info("Gerando mapa...")
-            progress = st.progress(0, text="Iniciando geração do mapa...")
+            progress = st.progress(20, text="Iniciando geração do mapa...")
             m = create_choropleth_map(
                 gdf,
                 gdf2,
@@ -318,7 +320,7 @@ def choropleth_tab():
                 message_placeholder.success("Legenda gerada com sucesso")
                 # Renderizar o mapa
                 #message_placeholder.info("Preparando o mapa para download...")
-                progress = st.progress(60, text="Gerando o buffer para download...")
+                progress = st.progress(80, text="Gerando o buffer para download...")
                 try:
                     #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
                     #map_html = m._repr_html_()
