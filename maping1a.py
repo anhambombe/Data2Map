@@ -339,12 +339,27 @@ def choropleth_tab():
                         progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
                         time.sleep(5)
                         message_placeholder.empty()
+                        # Exportação do mapa com nome personalizado
+                        if map_buffer and st.checkbox("Salvar mapa"):
+                            nome = st.text_input("Nome do mapa:", "meu_mapa")
+                            if nome:
+                                st.download_button(
+                                    label="Baixar Mapa como HTML",
+                                    data=map_buffer,
+                                    file_name=f"{nome}.html",
+                                    mime="text/html",
+                                    key="download_map_custom"
+                                )
+                            else:
+                                message_placeholder.warning("Insira um nome para o mapa.")
                     except Exception as e:
                         message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
                         return
                 else:
                     message_placeholder.error("Falha ao criar o mapa. Verifique se os shapefiles contêm geometrias válidas e se a coluna de categorias contém dados.")
                     return
+
+
     
             # Opção para baixar o mapa como HTML
             #if map_buffer:
@@ -356,19 +371,7 @@ def choropleth_tab():
                     #key="download_map"
                 #)
     
-            # Exportação do mapa com nome personalizado
-            if map_buffer and st.checkbox("Salvar mapa"):
-                nome = st.text_input("Nome do mapa:", "meu_mapa")
-                if nome:
-                    st.download_button(
-                        label="Baixar Mapa como HTML",
-                        data=map_buffer,
-                        file_name=f"{nome}.html",
-                        mime="text/html",
-                        key="download_map_custom"
-                    )
-                else:
-                    message_placeholder.warning("Insira um nome para o mapa.")
+
             else:
                 message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
 
