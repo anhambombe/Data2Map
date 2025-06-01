@@ -275,8 +275,8 @@ def choropleth_tab():
                     return
     
                 # Realizar a união dos dados
-                message_placeholder.info("Unindo dados...")
-                progress = st.progress(10, text="Unindo dados......")
+                message_placeholder.info("União dados...")
+                progress = st.progress(10, text="União de dados terminada.")
                 try:
                     gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
                     message_placeholder.success("Dados unidos com sucesso!")
@@ -294,7 +294,7 @@ def choropleth_tab():
     
                 # Criar o mapa
                 message_placeholder.info("Gerando mapa...")
-                progress = st.progress(20, text="Iniciando geração do mapa...")
+                progress = st.progress(20, text="Construção do mapa...")
                 m = create_choropleth_map(
                     gdf,
                     gdf2,
@@ -312,7 +312,7 @@ def choropleth_tab():
     
                 if m:
                     message_placeholder.success("Mapa gerado com sucesso!")
-                    progress = st.progress(60, text="Adicionando legenda no mapa...")
+                    progress = st.progress(60, text="Adição da legenda no mapa...")
                     add_legend(m, color_mapping, "Categorias")
                     # Gerar o buffer para download
                     map_buffer = io.BytesIO()
@@ -321,9 +321,10 @@ def choropleth_tab():
                     message_placeholder.success("Legenda gerada com sucesso")
                     # Renderizar o mapa
                     #message_placeholder.info("Preparando o mapa para download...")
-                    progress = st.progress(80, text="Gerando o buffer para download...")
+                    progress = st.progress(80, text="Geração do buffer para download...")
                     try:
                         #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
+                        progress = st.progress(100, text="Mapa finalizado. Pise no botão **Baixar** abaixo para fazer download do mapa")
                         
                         #map_html = m._repr_html_()
                         #st.components.v1.html(map_html, height=600, scrolling=True)
@@ -336,7 +337,7 @@ def choropleth_tab():
                             key="download_mapq")
     
                         message_placeholder.success("Todos elementos foram adicionados ao mapa com sucesso!")
-                        progress = st.progress(100, text="Mapa finalizado. Pise o botao **Baixar** na lateral para fazer download do mapa")
+
                         time.sleep(5)
                         message_placeholder.empty()
                         # Exportação do mapa com nome personalizado
