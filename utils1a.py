@@ -2,7 +2,7 @@ import streamlit as st
 import geopandas as gpd
 import pandas as pd
 import folium
-from folium.plugins import Fullscreen, MeasureControl, MousePosition
+from folium.plugins import Fullscreen, MeasureControl, MousePosition, LocateControl, Draw
 import tempfile
 import zipfile
 import os
