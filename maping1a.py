@@ -324,11 +324,11 @@ def choropleth_tab():
                     progress = st.progress(80, text="Gerando o buffer para download...")
                     try:
                         #st_folium(m, width=900, height=600, returned_objects=[], key="folium_map")
-                        with col2:
-                            #map_html = m._repr_html_()
-                            #st.components.v1.html(map_html, height=600, scrolling=True)
-                            #if map_buffer:
-                            st.sidebar.download_button(
+                        
+                        #map_html = m._repr_html_()
+                        #st.components.v1.html(map_html, height=600, scrolling=True)
+                        if map_buffer:
+                            st.download_button(
                             label="📥Baixar Mapa como HTML",
                             data=map_buffer,
                             file_name="mapa.html",
@@ -340,18 +340,18 @@ def choropleth_tab():
                         time.sleep(5)
                         message_placeholder.empty()
                         # Exportação do mapa com nome personalizado
-                        if map_buffer and st.checkbox("Salvar mapa"):
-                            nome = st.text_input("Nome do mapa:", "meu_mapa")
-                            if nome:
-                                st.download_button(
-                                    label="Baixar Mapa como HTML",
-                                    data=map_buffer,
-                                    file_name=f"{nome}.html",
-                                    mime="text/html",
-                                    key="download_map_custom"
-                                )
-                            else:
-                                message_placeholder.warning("Insira um nome para o mapa.")
+                        #if map_buffer and st.checkbox("Salvar mapa"):
+                            #nome = st.text_input("Nome do mapa:", "meu_mapa")
+                            #if nome:
+                                #st.download_button(
+                                    #label="Baixar Mapa como HTML",
+                                    #data=map_buffer,
+                                    #file_name=f"{nome}.html",
+                                    #mime="text/html",
+                                    #key="download_map_custom"
+                                #)
+                            #else:
+                                #message_placeholder.warning("Insira um nome para o mapa.")
                     except Exception as e:
                         message_placeholder.error(f"Erro ao renderizar o mapa: {e}")
                         return
