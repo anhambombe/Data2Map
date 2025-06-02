@@ -86,7 +86,36 @@ st.markdown(f"""
 
 
 #####################################################
-
+with st.expander("Faça clique aqui para ver as instruções 👇"):
+    st.markdown("""
+    **Atenção:**  
+    Para usar este aplicativo, precisa de dois arquivos compactados do tipo *.zip*:  
+    - Um com o shapefile das províncias.  
+    - Outro com o shapefile dos municípios.  
+    
+    **Também é necessário:**  
+    Uma tabela de dados nos formatos **.xlsx, .xls, .txt ou .csv**, com os dados a mapear.  
+    A coluna dos dados a mapear deve ser formatada de forma categórica, para criar intervalos/categorias.  
+    
+    ---
+    
+    ### Passos para elaborar mapas:
+    1. Faça a leitura dos shapefiles das províncias, municípios e da tabela de dados que contém os dados a mapear.  
+       - *NB*: O shapefile dos municípios e a tabela de dados devem ter uma coluna comum para junção.  
+    
+    2. Selecione as colunas comuns no shapefile e na tabela de dados.  
+    
+    3. Selecione a coluna de filtros e rótulos, e faça a seleção/filtragem das categorias que deseja mostrar.  
+    
+    4. Escolha as cores para cada categoria.  
+    
+    5. Marque a opção de mostrar rótulos (se necessário) e ajuste as configurações.  
+    
+    **NB**: O mapa permite escolher mostrar os limites das províncias/municípios e o tipo de fundo.
+    ---
+    ### Para fazer a leitura dos dados, procure por **Leitura de dados** no canto superior esquerdo da tela, bem abaixo do texto **Configurações**
+    """)
+##########################################################
 
 
 
