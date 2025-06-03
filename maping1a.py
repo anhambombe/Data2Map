@@ -176,7 +176,7 @@ def choropleth_tab():
             return
 
         # Seleção de colunas para união e categorias
-        with st.sidebar.expander("Selecione as colunas"):
+        with st.sidebar.expander(" 🔗 Selecione as colunas de União e dados"):
             join_column_shapefile = st.selectbox("Coluna de união (Shapefile):", [None] + list(gdf.columns))
             join_column_data = st.selectbox("Coluna de união (Tabela):", [None] + list(data.columns))
             categorical_column = st.selectbox("Coluna de categorias:", [None] + list(data.columns))
@@ -192,7 +192,7 @@ def choropleth_tab():
                 mun_border_color = st.color_picker("Cor dos limites (Municípios):", "#808080")
 
         # Configuração de rótulos
-        with st.sidebar.expander("Rótulos de dados"):
+        with st.sidebar.expander("🏷 Rótulos de dados"):
             col1, col2 = st.columns([0.5, 0.5])
             with col1:
                 exibir_labels_prov = st.checkbox("Exibir Labels das Províncias no Mapa", key="provi_checkbox")
@@ -268,7 +268,7 @@ def choropleth_tab():
         # Seleção de cores para categorias
         color_mapping = {}
         map_buffer = None  # Inicializar map_buffer localmente
-        with st.sidebar.expander("Selecione as cores"):
+        with st.sidebar.expander("🎨 Selecione as cores"):
             if categorical_column and categorical_column in data.columns:
                 unique_categories = data[categorical_column].dropna().unique()
                 if len(unique_categories) > 0:
