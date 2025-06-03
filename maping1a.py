@@ -429,7 +429,7 @@ choropleth_tab()
 
 st.sidebar.markdown("""
 ---
-**EasyMap** © 2024 | [**SCIDaR**](https://scidar.org)  
+**EasyMap**  | [**SCIDaR**](https://scidar.org) |© 2024
 **Versão:** 1.0.0
 """)
 
