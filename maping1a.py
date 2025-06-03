@@ -139,7 +139,7 @@ def choropleth_tab():
     message_placeholder = st.empty()
 
     # Carregamento de arquivos na barra lateral
-    with st.sidebar.expander("Leitura de dados1"):
+    with st.sidebar.expander("⚙ Leitura de dados "):
         shapefile_zip2 = st.file_uploader("Shapefile das Províncias (.zip)", type=["zip"])
         shapefile_zip = st.file_uploader("Shapefile dos Municípios (.zip)", type=["zip"])
         excel_file = st.file_uploader("Tabela de Dados", type=["xlsx", "xls", "txt", "csv"])
