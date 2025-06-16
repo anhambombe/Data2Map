@@ -347,7 +347,7 @@ def choropleth_tab():
                 if m:
                     message_placeholder.success("Mapa gerado com sucesso!")
                     st.progress(60, text="Adição da legenda no mapa...")
-                    add_legend(m, color_mapping, "Categorias")
+                    add_legend(m, color_mapping, categorical_column)
                     # Gerar o buffer para download
                     map_buffer = io.BytesIO()
                     m.save(map_buffer, close_file=False)
