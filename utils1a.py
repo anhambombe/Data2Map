@@ -318,7 +318,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
 
 def add_legend(m, color_mapping, title):
     """
-    Adiciona uma legenda ao mapa com base no mapeamento de cores.
+    Adiciona uma legenda ao mapa com base no mapeamento de cores .
 
     Args:
         m: Mapa Folium.
