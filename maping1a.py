@@ -11,7 +11,7 @@ import branca
 from folium.plugins import Fullscreen, MeasureControl, MousePosition
 from branca.element import Template, MacroElement
 
-# Configuração da página
+## Configuração da página
 st.set_page_config(
     page_title="DataOnMap",
     page_icon="dataonmapicon.png",
