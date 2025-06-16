@@ -316,7 +316,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
         message_placeholder.error(f"Erro ao criar o mapa: {e}")
         return None
 
-def add_legend(m, color_mapping, title="Legenda"):
+def add_legend(m, color_mapping, title):
     """
     Adiciona uma legenda ao mapa com base no mapeamento de cores.
 
