@@ -328,7 +328,7 @@ def choropleth_tab():
                 message_placeholder.info("Gerando mapa...")
                 st.progress(20, text="Construção do mapa...")
                 #message_placeholder.success("Dados unidos com sucesso!")
-                União de dados terminada
+                
                 m = create_choropleth_map(
                     gdf,
                     gdf2,
