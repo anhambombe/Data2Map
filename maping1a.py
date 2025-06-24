@@ -285,7 +285,7 @@ def choropleth_tab():
         col1, col2=st.columns(2)
         with col1:
             if st.sidebar.button("Gerar Mapa"):
-                st.progress(2, text="Validando as configurações obrigatórias...")
+                st.progress(2, text="Validação das configurações obrigatórias...")
                 #message_placeholder.success("Validação as configurações obrigatórias ✔")
                 # Validar configurações obrigatórias
                 if not (shapefile_zip2 and shapefile_zip and excel_file):
