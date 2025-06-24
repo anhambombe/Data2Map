@@ -430,7 +430,7 @@ def choropleth_tab():
 choropleth_tab()
 
 
-st.subheader(":rainbow[Mapa Coroplético]")
+st.sidebar.subheader(":rainbow[Mapa Coroplético]")
 st.sidebar.markdown("""
 ---
 **SimpMap** | [**SCIDaR**](https://scidar.org) | © 2024
