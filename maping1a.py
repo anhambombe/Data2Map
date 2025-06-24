@@ -307,7 +307,7 @@ def choropleth_tab():
     
                 # Realizar a união dos dados
                 #message_placeholder.info("União dados...")
-                st.progress(10, text="União de dados terminada.")
+                st.progress(10, text="União de dados.")
                 #message_placeholder.success("União de dados ✔")
                 try:
                     gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
@@ -325,7 +325,7 @@ def choropleth_tab():
                     return
     
                 # Criar o mapa
-                message_placeholder.info("Gerando mapa...")
+                #message_placeholder.info("Gerando mapa...")
                 st.progress(20, text="Construção do mapa...")
                 #message_placeholder.success("Dados unidos com sucesso!")
                 
