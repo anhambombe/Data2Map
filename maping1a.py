@@ -311,6 +311,7 @@ def choropleth_tab():
                 #message_placeholder.success("União de dados ✔")
                 try:
                     gdf = gdf.merge(data, left_on=join_column_shapefile, right_on=join_column_data, how="left")
+                    time.sleep(5)
                     message_placeholder.success("Dados unidos com sucesso!")
                 except ValueError as e:
                     message_placeholder.error(f"Erro ao unir os dados: {e}. Verifique se as colunas selecionadas contêm valores compatíveis (ex.: mesmo tipo de dado).")
@@ -407,8 +408,8 @@ def choropleth_tab():
                 #)
     
             elif shapefile_zip2 and shapefile_zip and excel_file:
-                message_placeholder.info("Pise no botão **Fazer Mapa** para construir o mapa.") 
-                #message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
+                #message_placeholder.info("Pise no botão **Fazer Mapa** para construir o mapa.") 
+                message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
             
             
             else:
