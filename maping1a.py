@@ -407,7 +407,8 @@ def choropleth_tab():
                 #)
     
             elif shapefile_zip2 and shapefile_zip and excel_file:
-                message_placeholder.info("Pise no botão *Fazer Mapa* para construir o mapa.")                
+                message_placeholder.info("Pise no botão **Fazer Mapa** para construir o mapa.") 
+                #message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
             
             
             else:
