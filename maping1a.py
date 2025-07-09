@@ -406,9 +406,15 @@ def choropleth_tab():
                     #key="download_map"
                 #)
     
-
+            elif shapefile_zip2 and shapefile_zip and excel_file:
+                message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")                
+            
+            
             else:
                 message_placeholder.info("Faça o upload de todos os arquivos necessários (shapefiles e tabela de dados).")
+            
+            
+            
 
 # Executar a aba Map
 #m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
