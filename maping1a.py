@@ -419,7 +419,25 @@ def choropleth_tab():
             
 
 # Abas da interface
-tab1, tab2 = st.sidebar.tabs(["🗺", "🌍"])
+st.markdown("""
+    <style>
+        .stTabs [data-baseweb="tab"] {
+            font-size: 18px;
+        }
+        .stTabs [data-baseweb="tab"]:nth-child(1)::before {
+            content: url('https://github.com/anhambombe/Data2Map/blob/main/dataonmap.jpg'); /* ícone 1 */
+            margin-right: 5px;
+        }
+        .stTabs [data-baseweb="tab"]:nth-child(2)::before {
+            content: url('https://github.com/anhambombe/Data2Map/blob/main/dataonmapicon.ico'); /* ícone 2 */
+            margin-right: 5px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+tab1, tab2 = st.tabs(["Mapa 1", "Mapa 2"])
+
+#tab1, tab2 = st.tabs(["🗺", "🌍"])
 
 with tab1:
     # Mapa base interativo
