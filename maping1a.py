@@ -433,10 +433,33 @@ def choropleth_tab():
                 Fullscreen(position="topleft").add_to(m)
                 MousePosition(position="topright", separator=" | ").add_to(m)
                 m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-                st.sidebar.st_folium(m, width=1600, height=1300)
+                #st_folium(m, width=1600, height=1300)
 
 
-choropleth_tab()
+# Abas da interface
+tab1, tab2 = st.tabs(["Mapa Interativo", "Mapa Coroplético"])
+
+with tab1:
+    # Mapa base interativo
+    m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None)
+
+    # Camadas de fundo
+    folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
+    folium.TileLayer("CartoDB positron", name="Cartografia", attr="Tiles © CartoDB").add_to(m)
+
+    # Controles
+    folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+    Fullscreen(position="topleft").add_to(m)
+    MousePosition(position="topright", separator=" | ").add_to(m)
+    m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
+
+    # Exibe o mapa
+    st_folium(m, width=1600, height=1300)
+
+with tab2:
+    # Aqui você chama a função que cria o mapa coroplético
+    choropleth_tab()
+#choropleth_tab()
 
 
 
