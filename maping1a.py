@@ -431,7 +431,7 @@ st.markdown("""
         .stTabs [data-baseweb="tab"]:nth-child(1)::before {
             content: "";
              background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center;
-            background-size: 20px 20px;
+            background-size: 0px 0px;
             width: 20px;
             height: 20px;
             position: absolute;
