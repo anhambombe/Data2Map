@@ -460,9 +460,7 @@ with tab1:
         returned_objects=["all_drawings"]  # ou "last_active_drawing"
     )
     
-    # Mostrar os dados desenhados
-    st.subheader("Dados desenhados (GeoJSON)")
-    #st.write(map_data.get("all_drawings"))
+
 
 with tab2:
     # Aqui você chama a função que cria o mapa coroplético
