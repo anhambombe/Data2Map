@@ -430,7 +430,7 @@ st.markdown("""
         }
         .stTabs [data-baseweb="tab"]:nth-child(1)::before {
             content: "";
-            /* background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center; /*
+             background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center;
             background-size: 20px 20px;
             width: 20px;
             height: 20px;
@@ -453,7 +453,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🗺Basemap", "Coromap"])
+tab1, tab2 = st.tabs(["🗺 Basemap", "Coromap"])
 
 
 #tab1, tab2 = st.tabs(["🗺", "🌍"])
