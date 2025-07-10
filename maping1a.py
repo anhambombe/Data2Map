@@ -423,10 +423,10 @@ m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
 
 # Adicionar camadas de fundo
 folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
-#folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
-white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
-folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
-folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
+folium.TileLayer("CartoDB positron", name="Fundo Cartográfico", attr="Tiles © CartoDB").add_to(m)
+#white_tile = branca.utilities.image_to_url([[1, 1], [1, 1]])
+#folium.TileLayer(tiles=white_tile, attr="@PAVANGOLA", name="Fundo Branco").add_to(m)
+#folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
 
 # Adicionar controles
 folium.LayerControl(position="topleft", collapsed=True).add_to(m)
