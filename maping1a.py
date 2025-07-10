@@ -453,6 +453,35 @@ with tab1:
     MousePosition(position="topright", separator=" | ").add_to(m)
     m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
 
+    # Adiciona a ferramenta de desenho
+    draw = Draw(
+        export=True,
+        filename="meu_desenho.geojson",
+        position="topleft",
+        draw_options={
+            'polyline': True,
+            'polygon': True,
+            'circle': False,
+            'rectangle': True,
+            'marker': True,
+            'circlemarker': False
+        },
+        edit_options={'edit': True, 'remove': True}
+    )
+    draw.add_to(m)
+    
+    # Exibir o mapa no Streamlit
+    map_data = st_folium(
+        m,
+        width=1200,
+        height=800,
+        returned_objects=["all_drawings"]  # ou "last_active_drawing"
+    )
+    
+    # Mostrar os dados desenhados
+    st.subheader("Dados desenhados (GeoJSON)")
+    st.write(map_data.get("all_drawings"))
+
     # Exibe o mapa
     st_folium(m, width=1600, height=1300)
 
