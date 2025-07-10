@@ -419,23 +419,42 @@ def choropleth_tab():
             
 
 # Abas da interface
+import streamlit as st
+
 st.markdown("""
     <style>
         .stTabs [data-baseweb="tab"] {
             font-size: 18px;
+            padding-left: 32px;
+            position: relative;
         }
         .stTabs [data-baseweb="tab"]:nth-child(1)::before {
-            content: url('https://github.com/anhambombe/Data2Map/blob/main/dataonmap.jpg'); /* ícone 1 */
-            margin-right: 5px;
+            content: "";
+            background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center;
+            background-size: 20px 20px;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         .stTabs [data-baseweb="tab"]:nth-child(2)::before {
-            content: url('https://github.com/anhambombe/Data2Map/blob/main/dataonmapicon.ico'); /* ícone 2 */
-            margin-right: 5px;
+            content: "";
+            background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmapicon.ico') no-repeat center;
+            background-size: 20px 20px;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
         }
     </style>
 """, unsafe_allow_html=True)
 
 tab1, tab2 = st.tabs(["Mapa 1", "Mapa 2"])
+
 
 #tab1, tab2 = st.tabs(["🗺", "🌍"])
 
