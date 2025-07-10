@@ -419,7 +419,7 @@ def choropleth_tab():
             
 
 # Abas da interface
-tab1, tab2 = st.tabs(["🗺", "🌍"])
+tab1, tab2 = st.sidebar.tabs(["🗺", "🌍"])
 
 with tab1:
     # Mapa base interativo
