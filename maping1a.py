@@ -473,7 +473,7 @@ with tab2:
 
 st.sidebar.markdown("""
 ---
-**SimpMap** | [**SCIDaR**](https://scidar.org) | © 2024
+**SimpMap** | [**SCIDaR**](https://scidar.org) | © 2025
 ---
 **Versão:** 1.0.0
 """)
