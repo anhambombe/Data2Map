@@ -429,11 +429,11 @@ folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False)
 #folium.TileLayer(" ", attr="@PAVANGOLA", name="Fundo Cinza").add_to(m)
 
 # Adicionar controles
-#folium.LayerControl(position="topleft", collapsed=True).add_to(m)
-#Fullscreen(position="topleft").add_to(m)
+folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+Fullscreen(position="topleft").add_to(m)
 #MousePosition(position="topright", separator=" | ").add_to(m)
 #m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-#st_folium(m, width=900, height=600)
+st_folium(m, width=900, height=600)
 
 choropleth_tab()
 
