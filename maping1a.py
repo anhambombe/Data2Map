@@ -437,7 +437,7 @@ def choropleth_tab():
 
 
 # Abas da interface
-tab1, tab2 = st.tabs(["", "Mapa Coroplético"])
+tab1, tab2 = st.tabs(["🗺", "🌍Mapa Coroplético"])
 
 with tab1:
     # Mapa base interativo
