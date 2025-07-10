@@ -482,8 +482,8 @@ with tab1:
     st.subheader("Dados desenhados (GeoJSON)")
     st.write(map_data.get("all_drawings"))
 
-    # Exibe o mapa
-    st_folium(m, width=1600, height=1300)
+    ## Exibe o mapa
+    #st_folium(m, width=1600, height=1300)
 
 with tab2:
     # Aqui você chama a função que cria o mapa coroplético
