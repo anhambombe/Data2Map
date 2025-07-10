@@ -433,7 +433,7 @@ def choropleth_tab():
                 Fullscreen(position="topleft").add_to(m)
                 MousePosition(position="topright", separator=" | ").add_to(m)
                 m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-                sidebar.st_folium(m, width=1600, height=1300)
+                st.sidebar.st_folium(m, width=1600, height=1300)
 
 
 choropleth_tab()
