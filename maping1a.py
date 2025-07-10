@@ -419,7 +419,7 @@ def choropleth_tab():
             
 
 # Abas da interface
-import streamlit as st
+#import streamlit as st
 
 st.markdown("""
     <style>
@@ -428,10 +428,12 @@ st.markdown("""
             padding-left: 32px;
             position: relative;
         }
+
+        /* 
         .stTabs [data-baseweb="tab"]:nth-child(1)::before {
             content: "";
-             background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center;
-            background-size: 0px 0px;
+            background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmap.jpg') no-repeat center;
+            background-size: 20px 20px;
             width: 20px;
             height: 20px;
             position: absolute;
@@ -439,6 +441,8 @@ st.markdown("""
             top: 50%;
             transform: translateY(-50%);
         }
+        */
+
         .stTabs [data-baseweb="tab"]:nth-child(2)::before {
             content: "";
             background: url('https://raw.githubusercontent.com/anhambombe/Data2Map/main/dataonmapicon.ico') no-repeat center;
@@ -453,7 +457,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🗺 Basemap", "Coromap"])
+tab1, tab2 = st.tabs(["🗺 BaseMap", "CoroMap"])
 
 
 #tab1, tab2 = st.tabs(["🗺", "🌍"])
