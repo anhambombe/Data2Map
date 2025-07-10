@@ -480,7 +480,7 @@ with tab1:
     
     # Mostrar os dados desenhados
     st.subheader("Dados desenhados (GeoJSON)")
-    st.write(map_data.get("all_drawings"))
+    #st.write(map_data.get("all_drawings"))
 
     ## Exibe o mapa
     #st_folium(m, width=1600, height=1300)
