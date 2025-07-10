@@ -419,7 +419,7 @@ def choropleth_tab():
             
 
 # Executar a aba Map
-m = folium.Map(location=[-11.2, 17.8], zoom_start=6)
+m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None)
 
 # Adicionar camadas de fundo
 folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
