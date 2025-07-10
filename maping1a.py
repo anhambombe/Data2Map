@@ -443,10 +443,10 @@ with tab1:
         draw_options={
             'polyline': True,
             'polygon': True,
-            'circle': False,
+            'circle': True,
             'rectangle': True,
             'marker': True,
-            'circlemarker': False
+            'circlemarker': True
         },
         edit_options={'edit': True, 'remove': True}
     )
@@ -455,7 +455,8 @@ with tab1:
     # Exibir o mapa no Streamlit
     map_data = st_folium(
         m,
-        width=1200,
+        width=900,
+        
         height=800,
         returned_objects=["all_drawings"]  # ou "last_active_drawing"
     )
