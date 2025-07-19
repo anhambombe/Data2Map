@@ -469,12 +469,47 @@ with tab1:
     # Camadas de fundo
     folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
     folium.TileLayer("CartoDB positron", name="Cartografia", attr="Tiles © CartoDB").add_to(m)
+    folium.TileLayer(tiles = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Maps',
+        overlay = False,
+        control = True
+    ).add_to(m)
+    folium.TileLayer(tiles = 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+        attr = 'Google',
+        name = 'Google Satellite',
+        overlay = True,
+        control = True
+    ).add_to(m)
+    ########################
+
+    folium.TileLayer(tiles = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+            attr = 'Google',
+            name = 'Google Terrain',
+            overlay = True,
+            control = True
+        ).add_to(m)
+    folium.TileLayer(tiles = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+            attr = 'Google',
+            name = 'Google Satellite',
+            overlay = True,
+            control = True
+        ).add_to(m)
+    folium.TileLayer(tiles = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr = 'Esri',
+            name = 'Esri Satellite',
+            overlay = True,
+            control = True
+        ).add_to(m)
+    #LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
 
     # Controles
     folium.LayerControl(position="topleft", collapsed=True).add_to(m)
     Fullscreen(position="topleft").add_to(m)
     MousePosition(position="topright", separator=" | ").add_to(m)
     m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
+
+    
 
     # Adiciona a ferramenta de desenho
     draw = Draw(
