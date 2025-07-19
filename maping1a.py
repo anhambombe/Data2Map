@@ -501,7 +501,7 @@ with tab1:
             overlay = True,
             control = True
         ).add_to(m)
-    #LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
+    LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
 
     # Controles
     folium.LayerControl(position="topleft", collapsed=True).add_to(m)
