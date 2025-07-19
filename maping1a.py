@@ -8,7 +8,7 @@ import time
 import streamlit.components.v1 as components
 
 import branca
-from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw
+from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw, LocateControl
 from branca.element import Template, MacroElement
 
 ## Configuração da página
