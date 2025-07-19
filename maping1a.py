@@ -9,6 +9,7 @@ import streamlit.components.v1 as components
 
 import branca
 from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw, LocateControl
+import folium.plugins
 from branca.element import Template, MacroElement
 
 ## Configuração da página
@@ -508,6 +509,7 @@ with tab1:
     Fullscreen(position="topleft").add_to(m)
     MousePosition(position="topright", separator=" | ").add_to(m)
     m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
+    folium.plugins.Geocoder(position="topleft").add_to(m)
 
     
 
