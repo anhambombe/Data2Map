@@ -10,6 +10,7 @@ import zipfile
 import os
 from branca.element import Template, MacroElement
 import branca
+import html
 
 #@st.cache_resource
 @st.cache_data
@@ -207,19 +208,37 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                 ).add_to(distr)
 
         # Adicionar rótulos para províncias
+        
         if prov_label_config and prov_label_config.get("column"):
             label_group_prov = folium.FeatureGroup("Rótulos Províncias", show=True).add_to(m)
             for _, row in _gdf2.iterrows():
                 if pd.notna(row[prov_label_config["column"]]) and pd.notna(row.geometry):
                     centroid = row.geometry.centroid
                     font_weight = "bold" if prov_label_config.get("bold", False) else "normal"
-                    html = f'<div style="font-size: {prov_label_config["font_size"]}px; color: {prov_label_config["font_color"]}; font-family: {prov_label_config["font_name"]}; font-weight: {font_weight}; text-align: center;">{row[prov_label_config["column"]]}</div>'
+        
+                    # Escapa os caracteres especiais/acentos
+                    texto_label = html.escape(str(row[prov_label_config["column"]]))
+        
+                    html_div = f'''
+                        <div style="
+                            font-size: {prov_label_config["font_size"]}px;
+                            color: {prov_label_config["font_color"]};
+                            font-family: {prov_label_config["font_name"]};
+                            font-weight: {font_weight};
+                            text-align: center;">
+                            {texto_label}
+                        </div>
+                    '''
+        
                     folium.Marker(
                         location=[centroid.y, centroid.x],
                         popup=folium.Popup(f"{row[prov_label_config['column']]}", parse_html=True),
-                        icon=folium.DivIcon(html=html)
+                        icon=folium.DivIcon(html=html_div)
                     ).add_to(label_group_prov)
 
+
+        # Adicionar rótulos para municípios
+        
         # Adicionar rótulos para municípios
         if mun_label_config and mun_label_config.get("column"):
             label_group_mun = folium.FeatureGroup("Rótulos Municípios", show=True).add_to(m)
@@ -227,12 +246,27 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
                 if pd.notna(row[mun_label_config["column"]]) and pd.notna(row.geometry):
                     centroid = row.geometry.centroid
                     font_weight = "bold" if mun_label_config.get("bold", False) else "normal"
-                    html = f'<div style="font-size: {mun_label_config["font_size"]}px; color: {mun_label_config["font_color"]}; font-family: {mun_label_config["font_name"]}; font-weight: {font_weight}; text-align: center;">{row[mun_label_config["column"]]}</div>'
+                    
+                    # Escapa corretamente acentos e símbolos HTML
+                    texto_label = html.escape(str(row[mun_label_config["column"]]))
+        
+                    html_div = f'''
+                        <div style="
+                            font-size: {mun_label_config["font_size"]}px;
+                            color: {mun_label_config["font_color"]};
+                            font-family: {mun_label_config["font_name"]};
+                            font-weight: {font_weight};
+                            text-align: center;">
+                            {texto_label}
+                        </div>
+                    '''
+                    
                     folium.Marker(
                         location=[centroid.y, centroid.x],
                         popup=folium.Popup(f"{row[mun_label_config['column']]}", parse_html=True),
-                        icon=folium.DivIcon(html=html)
+                        icon=folium.DivIcon(html=html_div)
                     ).add_to(label_group_mun)
+
 
         # Adicionar camadas de fundo
         # Adicionar camadas de fundo
