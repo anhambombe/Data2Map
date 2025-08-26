@@ -8,7 +8,7 @@ import time
 import streamlit.components.v1 as components
 
 import branca
-from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw, LocateControl
+from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw, LocateControl, MiniMap
 import folium.plugins
 from branca.element import Template, MacroElement
 
@@ -465,7 +465,7 @@ tab1, tab2 = st.tabs(["🗺 BaseMap", "CoroMap"])
 
 with tab1:
     # Mapa base interativo
-    m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None)
+    m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None, control_scale=True)
 
     # Camadas de fundo
     folium.TileLayer("OpenStreetMap", name="Ruas", attr="pav@ngola.com", show=False).add_to(m)
@@ -503,13 +503,24 @@ with tab1:
             control = True
         ).add_to(m)
     LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
+    minimap = MiniMap(toggle_display=True, position="bottomright")
+    minimap.add_to(m)
+    folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
     # Controles
     folium.LayerControl(position="topleft", collapsed=True).add_to(m)
     Fullscreen(position="topleft").add_to(m)
     MousePosition(position="topright", separator=" | ").add_to(m)
     m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
-    folium.plugins.Geocoder(position="topleft").add_to(m)
+    #folium.plugins.Geocoder(position="topleft").add_to(m)
+    folium.plugins.Geocoder(
+        position="topleft",
+        collapsed=True,        # toggle (caixa recolhida)
+        add_marker=False,       # adiciona marcador no resultado
+        placeholder="Digite um local...",
+        popup_on_found=True,
+        zoom=12
+    ).add_to(m)
 
     
 
