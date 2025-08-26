@@ -508,7 +508,7 @@ with tab1:
     folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
     # Controles
-    folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+    #folium.LayerControl(position="topleft", collapsed=True).add_to(m)
     Fullscreen(position="topleft").add_to(m)
     MousePosition(position="topright", separator=" | ").add_to(m)
     m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
