@@ -2,7 +2,7 @@ import streamlit as st
 import geopandas as gpd
 import pandas as pd
 import folium
-from folium.plugins import Fullscreen, MeasureControl, MousePosition, LocateControl, Draw
+from folium.plugins import Fullscreen, MeasureControl, MousePosition, LocateControl, Draw, MiniMap
 import folium.plugins
 from folium.features import FeatureGroup, CustomIcon
 import tempfile
@@ -177,7 +177,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
 
         # Criar o mapa
         message_placeholder.info("Construindo mapa...")
-        m = folium.Map(location=[latitude_central, longitude_central], zoom_start=6, tiles=None)
+        m = folium.Map(location=[latitude_central, longitude_central], zoom_start=6, tiles=None, control_scale=True)
 
         # Adicionar camada de províncias
         prov = folium.FeatureGroup("Províncias", show=True).add_to(m)
@@ -321,7 +321,16 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
         MousePosition(position="topright", separator=" | ").add_to(m)
         m.add_child(MeasureControl(position="topleft", secondary_length_unit='kilometers'))
         
-        folium.plugins.Geocoder(position="topleft").add_to(m)
+        #folium.plugins.Geocoder(position="topleft").add_to(m)
+        # Geocoder configurado
+        folium.plugins.Geocoder(
+            position="topleft",
+            collapsed=True,        # toggle (caixa recolhida)
+            add_marker=False,       # adiciona marcador no resultado
+            placeholder="Digite um local...",
+            popup_on_found=True,
+            zoom=12
+        ).add_to(m)
 
         # Adicionar o controle de desenho
         Draw(
@@ -339,6 +348,10 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
             edit_options={"poly": {"allowIntersection": False}}  # Editar sem interseções
         ).add_to(m)
         LocateControl(position="topright", strings={"title": "See you current location", "popup": "Your position"} ).add_to(m)
+        minimap = MiniMap(toggle_display=True, position="bottomright")
+        minimap.add_to(m)
+        folium.LayerControl(position="topleft", collapsed=True).add_to(m)
+        
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
 
         message_placeholder.empty()
