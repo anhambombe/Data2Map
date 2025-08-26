@@ -313,7 +313,7 @@ def create_choropleth_map(_gdf, _gdf2, categorical_column, color_mapping, toolti
         ################################
  
 
-        #################
+        ##################
 
         # Adicionar controles
         folium.LayerControl(position="topleft", collapsed=True).add_to(m)
