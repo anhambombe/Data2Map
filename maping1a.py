@@ -570,3 +570,4 @@ st.sidebar.subheader(":rainbow[Mapa Coroplético]")
 
 #st.sidebar.link_button("SCIDaR", "https://scidar.org")
 #st.sidebar.image("https://scidar.org/wp-content/uploads/2021/02/cropped-Big_no-bg-1-1.png", caption="", use_container_width=True)
+st.sidebar.link_button("Baixar versão desktop do App", "https://drive.google.com/uc?export=download&id=1Y--3vZgexFSe5I1JYq_zuQzvoClMObpk")
