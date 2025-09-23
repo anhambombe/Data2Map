@@ -485,6 +485,9 @@ with tab1:
                 #exibir_labels_distr = st.checkbox("Exibir Labels dos Municípios no Mapa", key="distritos_checkbox2")
                 st.write("...")
 
+                
+            prov_label_config=None
+
             prov_label_config = {}
             if exibir_labels_prov2:
                 prov_label_config["column"] = st.selectbox(
@@ -519,7 +522,7 @@ with tab1:
                     )
                 #####################################################################
                 # Adicionar rótulos para províncias
-                prov_label_config=None
+                
         
                 if prov_label_config and prov_label_config.get("column"):
                     label_group_prov = folium.FeatureGroup("Rótulos Províncias", show=True).add_to(m)
