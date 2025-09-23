@@ -523,7 +523,7 @@ with tab1:
         
                 if prov_label_config and prov_label_config.get("column"):
                     label_group_prov = folium.FeatureGroup("Rótulos Províncias", show=True).add_to(m)
-                    for _, row in _gdf_prov.iterrows():
+                    for _, row in gdf_prov.iterrows():
                         if pd.notna(row[prov_label_config["column"]]) and pd.notna(row.geometry):
                             centroid = row.geometry.centroid
                             font_weight = "bold" if prov_label_config.get("bold", False) else "normal"
