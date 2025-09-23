@@ -11,6 +11,7 @@ import branca
 from folium.plugins import Fullscreen, MeasureControl, MousePosition, Draw, LocateControl, MiniMap
 import folium.plugins
 from branca.element import Template, MacroElement
+import html
 
 ## Configuração da página
 st.set_page_config(
@@ -516,6 +517,36 @@ with tab1:
                         options=font_options,
                         key="prov_fontname12"
                     )
+                #####################################################################
+                # Adicionar rótulos para províncias
+                prov_label_config=None
+        
+                if prov_label_config and prov_label_config.get("column"):
+                    label_group_prov = folium.FeatureGroup("Rótulos Províncias", show=True).add_to(m)
+                    for _, row in _gdf_prov.iterrows():
+                        if pd.notna(row[prov_label_config["column"]]) and pd.notna(row.geometry):
+                            centroid = row.geometry.centroid
+                            font_weight = "bold" if prov_label_config.get("bold", False) else "normal"
+                
+                            # Escapa os caracteres especiais/acentos
+                            texto_label = html.escape(str(row[prov_label_config["column"]]))
+                
+                            html_div = f'''
+                                <div style="
+                                    font-size: {prov_label_config["font_size"]}px;
+                                    color: {prov_label_config["font_color"]};
+                                    font-family: {prov_label_config["font_name"]};
+                                    font-weight: {font_weight};
+                                    text-align: center;">
+                                    {texto_label}
+                                </div>
+                            '''
+                
+                            folium.Marker(
+                                location=[centroid.y, centroid.x],
+                                popup=folium.Popup(f"{row[prov_label_config['column']]}", parse_html=True),
+                                icon=folium.DivIcon(html=html_div)
+                            ).add_to(label_group_prov)
 
                 
             
