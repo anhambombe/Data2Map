@@ -468,11 +468,11 @@ with tab1:
     m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None, control_scale=True)
     with st.sidebar.expander("⚙ Carregar camada "):
         shapefile_prov = st.file_uploader("Carregue a camada (.zip)", type=["zip"])
-            if shapefile_prov:
-                gdf_prov = load_shapefile(shapefile_prov)
-                message_placeholder.info("Carregando arquivos...")
-                provincia_fg=folium.FeatureGroup("Limites").add_to(m)
-                folium.Geojson(gdf_prov).add_to(provincia_fg)
+        if shapefile_prov:
+            gdf_prov = load_shapefile(shapefile_prov)
+            message_placeholder.info("Carregando arquivos...")
+            provincia_fg=folium.FeatureGroup("Limites").add_to(m)
+            folium.Geojson(gdf_prov).add_to(provincia_fg)
                 
             
         #gdf = load_shapefile(shapefile_zip)
