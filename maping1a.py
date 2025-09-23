@@ -466,7 +466,7 @@ tab1, tab2 = st.tabs(["🗺 BaseMap", "CoroMap"])
 with tab1:
     # Mapa base interativo
     m = folium.Map(location=[-11.2, 17.8], zoom_start=6, tiles=None, control_scale=True)
-    with st.sidebar.expander("⚙ Carregar camada "):
+    with st.expander("⚙ Carregar camada "):
         shapefile_prov = st.file_uploader("Carregue a camada (.zip)", type=["zip"])
         #message_placeholder.empty()
         if shapefile_prov:
@@ -474,6 +474,49 @@ with tab1:
             #message_placeholder.info("Carregando arquivos...")
             provincia_fg=folium.FeatureGroup("Limites").add_to(m)
             folium.GeoJson(gdf_prov).add_to(provincia_fg)
+
+                    # Configuração de rótulos
+        #with st.sidebar.expander("🏷 Rótulos de dados"):
+            col1, col2 = st.columns([0.5, 0.5])
+            with col1:
+                exibir_labels_prov2 = st.checkbox("Exibir Labels das Províncias no Mapa", key="provi_checkbox2")
+            with col2:
+                #exibir_labels_distr = st.checkbox("Exibir Labels dos Municípios no Mapa", key="distritos_checkbox2")
+                st.write("...")
+
+            prov_label_config = {}
+            if exibir_labels_prov2:
+                prov_label_config["column"] = st.selectbox(
+                    "Coluna para rótulos (Províncias):",
+                    [None] + list(gdf_prov.columns),
+                    key="prov_label_column2"
+                )
+                col1, col2 = st.columns([0.5, 0.5])
+                with col1:
+                    prov_label_config["font_size"] = st.slider(
+                        "Tamanho da fonte (Províncias):",
+                        min_value=8, max_value=30, value=12, step=1,
+                        key="prov_font_size2"
+                    )
+                with col2:
+                    prov_label_config["bold"] = st.checkbox("Texto em negrito (Províncias)", key="bold_prov2")
+
+                col1, col2 = st.columns([0.5, 0.5])
+                with col1:
+                    fontcolor_pt1 = st.radio(
+                        "Selecione a cor da fonte (Províncias):",
+                        options=list(color_mapping_internal.keys()),
+                        key="prov_fontcolor_pt12"
+                    )
+                    prov_label_config["font_color"] = color_mapping_internal[fontcolor_pt1]
+                with col2:
+                    font_options = ["Arial", "Verdana", "Times New Roman", "Courier New", "Georgia", "Comic Sans MS", "Tahoma", "Trebuchet MS"]
+                    prov_label_config["font_name"] = st.radio(
+                        "Selecione o nome da fonte (Províncias):",
+                        options=font_options,
+                        key="prov_fontname12"
+                    )
+
                 
             
         #gdf = load_shapefile(shapefile_zip)
