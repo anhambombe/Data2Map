@@ -473,7 +473,7 @@ with tab1:
             gdf_prov = load_shapefile(shapefile_prov)
             #message_placeholder.info("Carregando arquivos...")
             provincia_fg=folium.FeatureGroup("Limites").add_to(m)
-            folium.Geojson(gdf_prov).add_to(provincia_fg)
+            folium.GeoJson(gdf_prov).add_to(provincia_fg)
                 
             
         #gdf = load_shapefile(shapefile_zip)
